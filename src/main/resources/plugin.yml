@@ -1,0 +1,76 @@
+name: AlkaFlair
+version: '${version}'
+main: com.alkacode.flair.AlkaFlairPlugin
+api-version: '1.21'
+author: AlkaStudio
+description: Tags cosmeticas (prefixo/sufixo equipavel, compravel) e medalhas (badges multi-equip por permissao) - dono do placeholder consumido por TAB/nChat.
+depend: [AlkaCore, AlkaEconomy]
+softdepend: [PlaceholderAPI, LuckPerms]
+
+commands:
+  tags:
+    description: Menu e gerenciamento de tags
+    usage: /<command> [info|add|del|dar|darpacote|setar|limpar|equipar|reload]
+    aliases: [tag]
+    permission: alkaflair.tags.usar
+  medals:
+    description: Menu e gerenciamento de medalhas
+    usage: /<command> [info|add|del|give|setslots|reload]
+    aliases: [medal, medalhas]
+    permission: alkaflair.medals.usar
+
+permissions:
+  alkaflair.tags.usar:
+    default: true
+    description: Usar o comando /tags
+  alkaflair.tags.info:
+    default: true
+    description: Ver info de tags de outro jogador
+  alkaflair.tags.add:
+    default: op
+    description: Desbloquear tag pra um jogador
+  alkaflair.tags.del:
+    default: op
+    description: Remover tag de um jogador
+  alkaflair.tags.dar:
+    default: op
+    description: Dar voucher fisico de tag
+  alkaflair.tags.darpacote:
+    default: op
+    description: Dar voucher fisico de pacote de tags
+  alkaflair.tags.setar:
+    default: op
+    description: Setar prefixo/sufixo proprio de um jogador
+  alkaflair.tags.limpar:
+    default: op
+    description: Limpar prefixo/sufixo proprio de um jogador
+  alkaflair.tags.equipar:
+    default: op
+    description: Forcar equipar uma tag em outro jogador
+  alkaflair.tags.reload:
+    default: op
+    description: Recarregar configuracao de tags
+  alkaflair.tags.bypass.cooldown:
+    default: op
+    description: Bypassar cooldown de troca de tag
+  alkaflair.medals.usar:
+    default: true
+    description: Usar o comando /medals
+  alkaflair.medals.info:
+    default: true
+    description: Ver info de medalhas de outro jogador
+  alkaflair.medals.add:
+    default: op
+    description: Desbloquear medalha pra um jogador
+  alkaflair.medals.del:
+    default: op
+    description: Remover medalha de um jogador
+  alkaflair.medals.give:
+    default: op
+    description: Dar voucher fisico de medalha
+  alkaflair.medals.setslots:
+    default: op
+    description: Definir o maximo de slots de medalha de um jogador
+  alkaflair.medals.reload:
+    default: op
+    description: Recarregar configuracao de medalhas

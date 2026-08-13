@@ -1,0 +1,76 @@
+# AlkaFlair - tags cosmeticas + medalhas
+# AlkaFlair NAO controla nametag/tablist/holograma diretamente - so expoe
+# placeholders (ver hook/PlaceholderAPIHook) pro TAB/nChat consumirem, igual o
+# resto do ecossistema (TAB ja e dono de tablist/nametag na rede).
+
+tags:
+  # Cooldown entre trocas de tag, em segundos (0 = sem cooldown)
+  switch-cooldown-seconds: 3
+
+  # Forca o jogador sempre ter alguma tag equipada (se false, permite desequipar)
+  force-equipped: false
+
+  # Titulo exibido ao trocar de tag
+  title:
+    enabled: true
+    title: "<white><tag_display>"
+    subtitle: "<gray>Tag selecionada"
+
+  # Som ao trocar de tag (vazio = desabilita)
+  sound: UI_TOAST_CHALLENGE_COMPLETE
+
+medals:
+  # Maximo padrao de medalhas equipadas simultaneamente (admin pode aumentar por jogador via /medals setslots)
+  default-max-slots: 3
+
+  # Ao desbloquear uma medalha via /medals add, tambem concede a permission no
+  # LuckPerms (se presente), alem de salvar no banco - mantem os dois em sincronia
+  # pra quem usa a permission em outro lugar (ex: outro plugin checando a mesma perm)
+  grant-permission-on-unlock: true
+
+# ============================================================
+# CUSTO EM MOEDA (compra de tags via AlkaEconomy)
+# ============================================================
+economy:
+  # Comandos de console executados apos uma compra bem-sucedida (alem de dar a tag)
+  # Placeholders: %player%, %tag_id%, %tag_permission%
+  purchase-commands: []
+
+# ============================================================
+# MENSAGENS
+# ============================================================
+messages:
+  prefix: "<dark_gray>[<#00D9FF>AlkaFlair<dark_gray>] "
+  reload: "<green>Configuracao recarregada."
+  no-permission: "<red>Voce nao tem permissao."
+  player-only: "<red>Este comando e apenas para jogadores."
+  player-not-found: "<red>Jogador nao encontrado."
+  usage: "<yellow>Uso: <white><usage>"
+
+  tag-not-found: "<red>Tag '<white><id></white>' nao existe."
+  tag-already-unlocked: "<red>Voce ja possui essa tag."
+  tag-not-unlocked: "<red>Voce nao possui essa tag."
+  tag-not-purchasable: "<red>Essa tag nao esta a venda."
+  tag-not-enough-currency: "<red>Voce nao tem saldo suficiente."
+  tag-purchase-success: "<green>Tag <white><tag_display> <green>comprada com sucesso!"
+  tag-equipped: "<green>Tag equipada: <tag_display>"
+  tag-unequipped: "<green>Tag removida."
+  tag-cooldown: "<red>Aguarde <white><seconds>s <red>para trocar de tag novamente."
+  tag-added: "<green>Tag <white><id> <green>adicionada para <white><player>."
+  tag-removed: "<green>Tag <white><id> <green>removida de <white><player>."
+  tag-own-set: "<green>Prefixo/sufixo proprio de <white><player> <green>definido."
+  tag-own-cleared: "<green>Prefixo/sufixo proprio de <white><player> <green>limpo."
+  tag-voucher-redeemed: "<green>Voce resgatou a tag <white><tag_display><green>!"
+  tag-voucher-already-redeemed: "<red>Esse voucher ja foi resgatado."
+
+  medal-not-found: "<red>Medalha '<white><id></white>' nao existe."
+  medal-already-unlocked: "<red>Voce ja possui essa medalha."
+  medal-not-unlocked: "<red>Voce nao possui essa medalha."
+  medal-slots-full: "<red>Voce ja tem o maximo de medalhas equipadas (<white><max></white>)."
+  medal-equipped: "<green>Medalha equipada: <medal_name>"
+  medal-unequipped: "<green>Medalha removida."
+  medal-added: "<green>Medalha <white><id> <green>adicionada para <white><player>."
+  medal-removed: "<green>Medalha <white><id> <green>removida de <white><player>."
+  medal-slots-set: "<green>Slots maximos de <white><player> <green>definidos para <white><amount>."
+  medal-voucher-redeemed: "<green>Voce resgatou a medalha <white><medal_name><green>!"
+  medal-voucher-already-redeemed: "<red>Esse voucher ja foi resgatado."

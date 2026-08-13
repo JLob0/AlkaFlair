@@ -1,0 +1,79 @@
+# Tags cosmeticas - equipaveis, uma por vez. NAO substitui o grupo do LuckPerms,
+# so sobrepoe visualmente via placeholder (%alkaflair_tag_prefix%/%alkaflair_tag_suffix%).
+#
+# purchasable: true = aparece a venda no menu, cobra em economy.currency/amount
+# obtainable: false = so admin pode dar via /tags add ou voucher (mesmo que purchasable seja false)
+# permission (opcional): se definida, o jogador precisa ter ESSA permissao pra
+#   contar como desbloqueada, alem (ou no lugar) de estar no /tags add - util pra
+#   ligar uma tag a um rank/grupo do LuckPerms sem duplicar controle de acesso.
+
+categories:
+  staff:
+    display: "<gold>Equipe"
+    position: 1
+  lendarias:
+    display: "<gradient:#FF0000:#FF8800>Lendárias"
+    position: 2
+  vip:
+    display: "<green>VIP"
+    position: 3
+  default:
+    display: "<gray>Padrão"
+    position: 99
+
+tags:
+  dono:
+    display: "<dark_red>Dono"
+    prefix: "<dark_red>[Dono] "
+    suffix: ""
+    description:
+      - "<gray>Tag destinada aos donos do servidor."
+    category: staff
+    position: 1
+    purchasable: false
+    obtainable: false
+    permission: "alkaflair.tag.dono"
+    glow: true
+    item:
+      material: NETHER_STAR
+      name: "<dark_red>Tag Dono"
+
+  dragao:
+    display: "<gradient:#FF0000:#FF8800>Dragão"
+    prefix: "<#FF0000>[Dragão] "
+    suffix: ""
+    description:
+      - "<gray>Tag lendária de fogo."
+    category: lendarias
+    position: 1
+    purchasable: true
+    obtainable: true
+    price:
+      currency: coins
+      amount: 50000
+    permission: "alkaflair.tag.dragao"
+    glow: false
+    aliases: [drag]
+    item:
+      material: DRAGON_HEAD
+      name: "<#FF0000>Tag Dragão"
+      lore:
+        - "<gray>Prefixo: <#FF0000>[Dragão]"
+        - ""
+        - "<yellow>Preço: <gold>50.000 Coins"
+
+  membro:
+    display: "<gray>Membro"
+    prefix: ""
+    suffix: ""
+    description:
+      - "<gray>Tag padrão de todo jogador."
+    category: default
+    position: 1
+    purchasable: false
+    obtainable: true
+    permission: ""
+    glow: false
+    item:
+      material: NAME_TAG
+      name: "<gray>Tag Membro"

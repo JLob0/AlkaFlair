@@ -1,0 +1,41 @@
+# Medalhas cosmeticas - badges, multiplas equipaveis ao mesmo tempo (ate o limite
+# de slots do jogador, ver config.yml medals.default-max-slots). Sem compra: so
+# desbloqueiam por permissao (o jogador ja tem a permission em algum grupo) ou por
+# /medals add / voucher fisico admin-dado.
+
+medals:
+  beta_tester:
+    display: "<gold>β"
+    name: "<gold>Testador Beta"
+    description:
+      - "<gray>Participou do beta do servidor."
+    permission: "alkaflair.medal.beta_tester"
+    rarity: "<white>Comum"
+    position: 1
+    item:
+      material: EXPERIENCE_BOTTLE
+      name: "<gold>Medalha Beta"
+
+  top_pvp:
+    display: "<red>⚔"
+    name: "<red>Top PvP"
+    description:
+      - "<gray>Ficou em 1º lugar no ranking de PvP."
+    permission: "alkaflair.medal.top_pvp"
+    rarity: "<aqua>Raro"
+    position: 2
+    item:
+      material: DIAMOND_SWORD
+      name: "<red>Medalha Top PvP"
+
+  doador:
+    display: "<light_purple>♛"
+    name: "<light_purple>Doador"
+    description:
+      - "<gray>Apoiou o servidor com uma doação."
+    permission: "alkaflair.medal.doador"
+    rarity: "<light_purple>Épico"
+    position: 3
+    item:
+      material: NETHERITE_INGOT
+      name: "<light_purple>Medalha Doador"
