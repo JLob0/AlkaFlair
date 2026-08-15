@@ -8,6 +8,8 @@ import com.alkacode.flair.service.FlairEconomyService;
 import com.alkacode.flair.tag.Tag;
 import com.alkacode.flair.tag.TagManager;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
+import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
@@ -80,12 +82,12 @@ public final class PlaceholderAPIHook extends PlaceholderExpansion {
         PlayerFlairData data = dataManager.get(player.getUniqueId());
 
         return switch (lower) {
-            case "tag" -> data != null ? equippedTagDisplay(data) : "";
+            case "tag" -> data != null ? toLegacy(equippedTagDisplay(data)) : "";
             case "tag_id" -> data != null && data.equippedTagId() != null ? data.equippedTagId() : "none";
-            case "tag_prefix" -> data != null ? resolvedPrefix(data) : "";
-            case "tag_suffix" -> data != null ? resolvedSuffix(data) : "";
+            case "tag_prefix" -> data != null ? toLegacy(resolvedPrefix(data)) : "";
+            case "tag_suffix" -> data != null ? toLegacy(resolvedSuffix(data)) : "";
             case "tag_count" -> String.valueOf(data != null ? data.unlockedTagIds().size() : 0);
-            case "medals" -> data != null ? equippedMedalsConcat(data) : "";
+            case "medals" -> data != null ? toLegacy(equippedMedalsConcat(data)) : "";
             case "medal_count" -> String.valueOf(data != null ? data.unlockedMedalIds().size() : 0);
             case "medal_slots" -> data != null ? data.equippedMedalIds().size() + "/" + data.maxMedalSlots() : "0/0";
             default -> null;
@@ -168,5 +170,25 @@ public final class PlaceholderAPIHook extends PlaceholderExpansion {
                 .sorted(java.util.Comparator.comparingInt(Medal::position))
                 .map(Medal::display)
                 .collect(Collectors.joining(" "));
+    }
+
+    // character(SECTION_CHAR) (nao legacyAmpersand()) + useUnusualXRepeatedCharacterHexFormat():
+    // consumidores (TAB, nosso proprio placar via AlkaEssentials) so entendem codigo real "§",
+    // nunca texto "&" cru - texto "&" ja causou o placar quebrar de verdade uma vez (nome de
+    // mina com gradient no AlkaMines, corrigido v1.0.83) - mesma classe de bug aqui.
+    private static final LegacyComponentSerializer LEGACY = LegacyComponentSerializer.builder()
+            .character(LegacyComponentSerializer.SECTION_CHAR)
+            .hexColors()
+            .useUnusualXRepeatedCharacterHexFormat()
+            .build();
+
+    /** Converte o display (escrito em MiniMessage nas configs) pra codigos legado reais (§).
+     * Vazio vira vazio. O §r final impede a cor/estilo da tag de vazar pro que vier depois
+     * (suffix/mensagem). */
+    private String toLegacy(String miniMessage) {
+        if (miniMessage == null || miniMessage.isBlank()) {
+            return "";
+        }
+        return LEGACY.serialize(MiniMessage.miniMessage().deserialize(miniMessage)) + "§r";
     }
 }

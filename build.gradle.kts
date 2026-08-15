@@ -6,7 +6,7 @@ plugins {
 }
 
 group = "com.alkacode"
-version = "1.0.0"
+version = "1.0.1"
 
 java {
     toolchain {
@@ -27,7 +27,7 @@ dependencies {
     compileOnly("io.papermc.paper:paper-api:1.21.8-R0.1-SNAPSHOT")
     // banco/HikariCP e GUI base vem do AlkaCore (DatabaseProvider/BaseGui) - AlkaFlair
     // nao abre conexao JDBC propria nem registra o proprio GuiListener.
-    compileOnly("com.alkacode:AlkaCore:1.0.1")
+    compileOnly("com.alkacode:AlkaCore:1.0.2")
     // compra de tags e paga em qualquer moeda da AlkaEconomy (config-driven).
     compileOnly("com.alkacode:AlkaEconomy:1.0.6")
     compileOnly("me.clip:placeholderapi:2.11.6")
