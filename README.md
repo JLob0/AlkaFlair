@@ -1,61 +1,91 @@
+<div align="center">
+
 # AlkaFlair
 
-Tags cosméticas (prefixo/sufixo equipável, comprável) + medalhas (badges multi-equip
-por permissão) num único plugin, para a rede AlkaStudio (Paper 1.21.8 / Java 21) —
-construído sobre o AlkaCore. Une o que seriam dois plugins separados (AlkaTags +
-AlkaMedals) porque as duas coisas são a mesma ideia (identidade cosmética
-equipável), sempre exibidas juntas na mesma linha de tab/chat.
+### Identidade cosmética: tags e medalhas num só lugar
 
-## O que faz
+Prefixos/sufixos equipáveis e badges colecionáveis, sempre exibidos juntos —
+construído sobre o **AlkaCore**.
 
-- **Tags** — cosmético de prefixo/sufixo, uma equipada por vez. Não substitui o
-  grupo do LuckPerms, só sobrepõe visualmente via placeholder. Compráveis (por
-  qualquer moeda da AlkaEconomy) ou concedidas por permissão/admin. Categorias com
-  ordenação, aliases pra equipar rápido (`/tags dragao`), cooldown configurável
-  entre trocas, título/som de feedback ao trocar.
-- **Medalhas** — badges, várias equipadas ao mesmo tempo (até um limite de slots
-  configurável por jogador). Sem compra: desbloqueiam por permissão já concedida em
-  algum grupo, ou por `/medals add`/voucher admin-dado.
-- **Vouchers físicos** — item com PDC, clique direito resgata (tag individual,
-  pacote de várias tags, ou medalha).
-- **Prefixo/sufixo próprio** (`/tags setar`) — admin define um prefixo/sufixo
-  customizado por jogador, fora do catálogo de tags (ex: para nomes especiais
-  únicos).
-- **API pública** (`AlkaFlairAPI`, `ServicesManager`) — pensada pra integrações
-  futuras tipo "AlkaVips concede uma tag automaticamente na compra do VIP" sem o
-  consumidor importar nenhuma classe interna daqui.
-- **Placeholders** (`%alkaflair_tag%`, `%alkaflair_tag_prefix%`,
-  `%alkaflair_tag_suffix%`, `%alkaflair_has_tag_<id>%`, `%alkaflair_medals%`,
-  `%alkaflair_medal_slots%`, etc.) — consumidos pelo TAB/nChat. **AlkaFlair não
-  controla nametag/tablist/holograma diretamente** — isso já é papel do TAB na
-  rede, então o plugin só expõe os placeholders, nunca reimplementa a exibição.
+![Java](https://img.shields.io/badge/Java-21-orange)
+![Minecraft](https://img.shields.io/badge/Minecraft-1.21.8-green)
+![Version](https://img.shields.io/badge/Version-1.0.1-blue)
+![License](https://img.shields.io/badge/License-Proprietary-red)
 
-## Dependências
+</div>
 
-- **AlkaCore** e **AlkaEconomy** (hard dependency) — GUI compartilhada e moeda de
-  compra de tags.
-- **PlaceholderAPI**, **LuckPerms** — soft-dependency.
+---
 
-## Limitações conhecidas (v1.0.0)
+## 📋 Sobre o Projeto
 
-- Sem sub-comando `/tags forcar <jogador>` (abrir o menu remotamente em outro
-  jogador) — fora de escopo desta versão, fácil de adicionar depois.
-- Vouchers de tag/medalha não têm quantidade em pilha configurável além do simples
-  `amount` no comando de dar.
-- `%alkaflair_has_tag_<id>%`/`%alkaflair_has_medal_<id>%` e a checagem de
-  permission-gate só são confiáveis para jogador **online** (permissão é lida ao
-  vivo via `Player#hasPermission`, não há consulta ao LuckPerms offline).
+O **AlkaFlair** une em um único plugin o que normalmente seriam dois: tags
+cosméticas (prefixo/sufixo equipável) e medalhas (badges colecionáveis). As
+duas coisas compartilham a mesma ideia — identidade visual do jogador — e
+por isso ficam sempre exibidas juntas na mesma linha de tab/chat.
 
-## Origem
+## ✨ Funcionalidades Principais
 
-Especificação inicial em `Plugins_Antigos/AlkaTags_AlkaMedals_Spec.md` (dois
-plugins separados) — refinada em conversa com o usuário para um único plugin
-(nome escolhido: AlkaFlair) dado o alto acoplamento conceitual entre os dois
-sistemas. Configs de referência (`tags.yml`/`medals.yml`/categorias/vouchers)
-inspiradas na estrutura real de dois plugins comerciais equivalentes (LeafTags/
-LeafMedals) encontrados em `Plugins_Antigos/AlkaFlair/` — **só os arquivos YAML de
-config foram usados como referência de escopo/features**, nenhum código Java
-desses plugins (pagos, sem licença de redistribuição, a maior parte sequer
-descompilável de verdade — só um bootstrap loader) foi lido ou copiado. O sistema
-de nametag/holograma/scoreboard-teams do LeafTags (a funcionalidade mais complexa
-dele) foi deliberadamente deixado de fora — esse papel já é do TAB na rede.
+- 🏷️ **Tags** — prefixo/sufixo cosmético, uma equipada por vez. Compráveis
+  em qualquer moeda do AlkaEconomy ou concedidas por permissão, com
+  categorias organizadas, aliases rápidos e cooldown entre trocas.
+- 🎖️ **Medalhas** — badges colecionáveis, várias equipadas ao mesmo tempo até
+  um limite configurável de slots por jogador.
+- 🎁 **Vouchers físicos** — itens resgatáveis com um clique, seja pra uma tag
+  individual, um pacote de tags ou uma medalha.
+- ✍️ **Prefixo/sufixo personalizado** — administradores podem definir um
+  visual único por jogador, fora do catálogo padrão de tags.
+- 🔌 **API pública** — pronta pra integrações futuras, como outros plugins
+  concedendo tags automaticamente por eventos (ex.: compra de VIP).
+- 🔤 **Placeholders completos** — expostos pra qualquer plugin de
+  tablist/chat (TAB, nChat) exibir tags e medalhas sem esforço extra.
+
+## 🔗 Integrações
+
+Construído sobre o **AlkaCore** e o **AlkaEconomy** (moeda de compra de
+tags). Expõe placeholders consumidos por **PlaceholderAPI**, **TAB** e
+**nChat**. Compatível com **LuckPerms**.
+
+## 🔧 Tecnologias Utilizadas
+
+- **Java 21** · **Paper API 1.21.8**
+- **AlkaCore** (banco de dados e GUI compartilhados)
+- **AlkaEconomy** (moeda de compra)
+
+## ⚙️ Instalação
+
+1. Instale o **AlkaCore** e o **AlkaEconomy** antes (dependências obrigatórias).
+2. Coloque `AlkaFlair.jar` na pasta `plugins/` do servidor.
+3. Reinicie o servidor.
+4. Configure tags, medalhas e categorias em `tags.yml`/`medals.yml`.
+
+## 🎮 Comandos
+
+| Comando | Descrição |
+| --- | --- |
+| `/tags` | Abre o menu de tags |
+| `/tags <alias>` | Equipa uma tag rapidamente pelo apelido |
+| `/tags setar` | Define um prefixo/sufixo personalizado (admin) |
+| `/medals` | Abre o menu de medalhas |
+| `/medals add` | Concede uma medalha a um jogador (admin) |
+
+## 📝 Licença
+
+> ⚠️ **Projeto proprietário da AlkaStudio.**
+>
+> Código fonte destinado exclusivamente ao uso interno da rede `Alka*`.
+> Reprodução, distribuição ou uso não autorizado não são permitidos.
+
+## 🎯 Créditos
+
+- **Desenvolvido por**: MestreDEV — AlkaStudio
+- **Parte do ecossistema**: `Alka*`
+
+---
+
+<div align="center">
+
+**Desenvolvido com ❤️ pela AlkaStudio**
+
+[![AlkaStudio](https://img.shields.io/badge/AlkaStudio-JLob0-blue)](https://github.com/JLob0)
+
+</div>
