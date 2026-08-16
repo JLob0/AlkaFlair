@@ -60,13 +60,30 @@ tags). Expõe placeholders consumidos por **PlaceholderAPI**, **TAB** e
 
 ## 🎮 Comandos
 
-| Comando | Descrição |
-| --- | --- |
-| `/tags` | Abre o menu de tags |
-| `/tags <alias>` | Equipa uma tag rapidamente pelo apelido |
-| `/tags setar` | Define um prefixo/sufixo personalizado (admin) |
-| `/medals` | Abre o menu de medalhas |
-| `/medals add` | Concede uma medalha a um jogador (admin) |
+| Comando | Descrição | Permissão |
+| --- | --- | --- |
+| `/tags` | Abre o menu de tags | `alkaflair.tags.usar` |
+| `/tags <alias>` | Equipa uma tag rapidamente pelo apelido | `alkaflair.tags.usar` |
+| `/tags setar` | Define um prefixo/sufixo personalizado | `alkaflair.tags.setar` |
+| `/medals` | Abre o menu de medalhas | `alkaflair.medals.usar` |
+| `/medals add` | Concede uma medalha a um jogador | `alkaflair.medals.add` |
+
+## 🔐 Permissões
+
+| Permissão | Descrição | Padrão |
+| --- | --- | --- |
+| `alkaflair.tags.usar` | Usa o comando `/tags` | `true` |
+| `alkaflair.tags.info` | Vê a info de tags de outro jogador | `true` |
+| `alkaflair.tags.add` / `.del` | Desbloqueia/remove tag de um jogador | `op` |
+| `alkaflair.tags.dar` / `.darpacote` | Dá voucher físico de tag/pacote | `op` |
+| `alkaflair.tags.setar` / `.limpar` / `.equipar` | Define, limpa ou força a tag de outro jogador | `op` |
+| `alkaflair.tags.reload` | Recarrega a configuração de tags | `op` |
+| `alkaflair.tags.bypass.cooldown` | Ignora o cooldown de troca de tag | `op` |
+| `alkaflair.medals.usar` | Usa o comando `/medals` | `true` |
+| `alkaflair.medals.info` | Vê a info de medalhas de outro jogador | `true` |
+| `alkaflair.medals.add` / `.del` / `.give` | Desbloqueia, remove ou dá voucher de medalha | `op` |
+| `alkaflair.medals.setslots` | Define o máximo de slots de medalha de um jogador | `op` |
+| `alkaflair.medals.reload` | Recarrega a configuração de medalhas | `op` |
 
 ## 📝 Licença
 
