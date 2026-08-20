@@ -6,7 +6,7 @@ plugins {
 }
 
 group = "com.alkacode"
-version = "1.0.1"
+version = "1.0.2"
 
 java {
     toolchain {
@@ -29,7 +29,7 @@ dependencies {
     // nao abre conexao JDBC propria nem registra o proprio GuiListener.
     compileOnly("com.alkacode:AlkaCore:1.0.3")
     // compra de tags e paga em qualquer moeda da AlkaEconomy (config-driven).
-    compileOnly("com.alkacode:AlkaEconomy:1.0.6")
+    compileOnly("com.alkacode:AlkaEconomy:1.0.8")
     compileOnly("me.clip:placeholderapi:2.11.6")
     compileOnly("net.luckperms:api:5.4")
 }

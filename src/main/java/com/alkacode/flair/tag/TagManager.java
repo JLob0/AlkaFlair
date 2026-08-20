@@ -73,7 +73,7 @@ public final class TagManager {
 
     private Tag parseTag(String id, ConfigurationSection s) {
         ConfigurationSection priceSection = s.getConfigurationSection("price");
-        String priceCurrency = priceSection != null ? priceSection.getString("currency", "coins") : "coins";
+        String priceCurrency = priceSection != null ? priceSection.getString("currency", "gold") : "gold";
         double priceAmount = priceSection != null ? priceSection.getDouble("amount", 0) : 0;
 
         return new Tag(

@@ -49,7 +49,7 @@ tags:
     purchasable: true
     obtainable: true
     price:
-      currency: coins
+      currency: gold
       amount: 50000
     permission: "alkaflair.tag.dragao"
     glow: false
@@ -60,7 +60,7 @@ tags:
       lore:
         - "<gray>Prefixo: <#FF0000>[Dragão]"
         - ""
-        - "<yellow>Preço: <gold>50.000 Coins"
+        - "<yellow>Preço: <gold>50.000 Gold"
 
   membro:
     display: "<gray>Membro"
