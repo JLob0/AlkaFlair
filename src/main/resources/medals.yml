@@ -41,3 +41,60 @@ medals:
     item:
       material: NETHERITE_INGOT
       name: "<light_purple>Medalha Doador"
+
+  # ===== TESTE (21/08) - 6 medalhas so pra validar equipar/trocar varias ao mesmo
+  # tempo (limite de slots). Dar via /medals add <id> <jogador>. Apagar apos o teste. =====
+  teste_medalha_1:
+    display: "<white>①"
+    name: "<white>Teste 1"
+    description: ["<gray>Medalha de teste 1."]
+    permission: ""
+    rarity: "<white>Teste"
+    source: "Teste 21/08"
+    position: 4
+    item: { material: PAPER, name: "<white>Teste Medalha 1" }
+  teste_medalha_2:
+    display: "<yellow>②"
+    name: "<yellow>Teste 2"
+    description: ["<gray>Medalha de teste 2."]
+    permission: ""
+    rarity: "<yellow>Teste"
+    source: "Teste 21/08"
+    position: 5
+    item: { material: PAPER, name: "<yellow>Teste Medalha 2" }
+  teste_medalha_3:
+    display: "<green>③"
+    name: "<green>Teste 3"
+    description: ["<gray>Medalha de teste 3."]
+    permission: ""
+    rarity: "<green>Teste"
+    source: "Teste 21/08"
+    position: 6
+    item: { material: PAPER, name: "<green>Teste Medalha 3" }
+  teste_medalha_4:
+    display: "<aqua>④"
+    name: "<aqua>Teste 4"
+    description: ["<gray>Medalha de teste 4."]
+    permission: ""
+    rarity: "<aqua>Teste"
+    source: "Teste 21/08"
+    position: 7
+    item: { material: PAPER, name: "<aqua>Teste Medalha 4" }
+  teste_medalha_5:
+    display: "<light_purple>⑤"
+    name: "<light_purple>Teste 5"
+    description: ["<gray>Medalha de teste 5."]
+    permission: ""
+    rarity: "<light_purple>Teste"
+    source: "Teste 21/08"
+    position: 8
+    item: { material: PAPER, name: "<light_purple>Teste Medalha 5" }
+  teste_medalha_6:
+    display: "<red>⑥"
+    name: "<red>Teste 6"
+    description: ["<gray>Medalha de teste 6."]
+    permission: ""
+    rarity: "<red>Teste"
+    source: "Teste 21/08"
+    position: 9
+    item: { material: PAPER, name: "<red>Teste Medalha 6" }

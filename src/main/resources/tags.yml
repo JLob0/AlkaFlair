@@ -20,6 +20,9 @@ categories:
   default:
     display: "<gray>Padrão"
     position: 99
+  teste:
+    display: "<white>[TESTE] Trocar"
+    position: 0
 
 tags:
   dono:
@@ -81,3 +84,287 @@ tags:
     item:
       material: NAME_TAG
       name: "<gray>Tag Membro"
+
+  # ===== TESTE (21/08) - 3 tags por tier de VIP, so pra validar o fluxo de troca
+  # no jogo. Compra por 1 gold (barato de proposito). Apagar quando terminar o teste. =====
+  teste_vip_a:
+    display: "<#55FF55>Teste VIP A"
+    prefix: "<#55FF55>[T-VIP-A] "
+    suffix: ""
+    description: ["<gray>Tag de teste - tier VIP."]
+    rarity: "<#55FF55>Teste"
+    source: "Teste 21/08"
+    category: teste
+    position: 1
+    purchasable: true
+    obtainable: true
+    price:
+      currency: gold
+      amount: 1
+    permission: ""
+    glow: false
+    item: { material: PAPER, name: "<#55FF55>Teste VIP A" }
+  teste_vip_b:
+    display: "<#55FF55>Teste VIP B"
+    prefix: "<#55FF55>[T-VIP-B] "
+    suffix: ""
+    description: ["<gray>Tag de teste - tier VIP."]
+    rarity: "<#55FF55>Teste"
+    source: "Teste 21/08"
+    category: teste
+    position: 2
+    purchasable: true
+    obtainable: true
+    price:
+      currency: gold
+      amount: 1
+    permission: ""
+    glow: false
+    item: { material: PAPER, name: "<#55FF55>Teste VIP B" }
+  teste_vip_c:
+    display: "<#55FF55>Teste VIP C"
+    prefix: "<#55FF55>[T-VIP-C] "
+    suffix: ""
+    description: ["<gray>Tag de teste - tier VIP."]
+    rarity: "<#55FF55>Teste"
+    source: "Teste 21/08"
+    category: teste
+    position: 3
+    purchasable: true
+    obtainable: true
+    price:
+      currency: gold
+      amount: 1
+    permission: ""
+    glow: false
+    item: { material: PAPER, name: "<#55FF55>Teste VIP C" }
+
+  teste_vipplus_a:
+    display: "<#00FFAA>Teste VIP+ A"
+    prefix: "<#00FFAA>[T-VIP+A] "
+    suffix: ""
+    description: ["<gray>Tag de teste - tier VIP+."]
+    rarity: "<#00FFAA>Teste"
+    source: "Teste 21/08"
+    category: teste
+    position: 4
+    purchasable: true
+    obtainable: true
+    price: { currency: gold, amount: 1 }
+    permission: ""
+    glow: false
+    item: { material: PAPER, name: "<#00FFAA>Teste VIP+ A" }
+  teste_vipplus_b:
+    display: "<#00FFAA>Teste VIP+ B"
+    prefix: "<#00FFAA>[T-VIP+B] "
+    suffix: ""
+    description: ["<gray>Tag de teste - tier VIP+."]
+    rarity: "<#00FFAA>Teste"
+    source: "Teste 21/08"
+    category: teste
+    position: 5
+    purchasable: true
+    obtainable: true
+    price: { currency: gold, amount: 1 }
+    permission: ""
+    glow: false
+    item: { material: PAPER, name: "<#00FFAA>Teste VIP+ B" }
+  teste_vipplus_c:
+    display: "<#00FFAA>Teste VIP+ C"
+    prefix: "<#00FFAA>[T-VIP+C] "
+    suffix: ""
+    description: ["<gray>Tag de teste - tier VIP+."]
+    rarity: "<#00FFAA>Teste"
+    source: "Teste 21/08"
+    category: teste
+    position: 6
+    purchasable: true
+    obtainable: true
+    price: { currency: gold, amount: 1 }
+    permission: ""
+    glow: false
+    item: { material: PAPER, name: "<#00FFAA>Teste VIP+ C" }
+
+  teste_mvp_a:
+    display: "<#55AAFF>Teste MVP A"
+    prefix: "<#55AAFF>[T-MVP-A] "
+    suffix: ""
+    description: ["<gray>Tag de teste - tier MVP."]
+    rarity: "<#55AAFF>Teste"
+    source: "Teste 21/08"
+    category: teste
+    position: 7
+    purchasable: true
+    obtainable: true
+    price: { currency: gold, amount: 1 }
+    permission: ""
+    glow: false
+    item: { material: PAPER, name: "<#55AAFF>Teste MVP A" }
+  teste_mvp_b:
+    display: "<#55AAFF>Teste MVP B"
+    prefix: "<#55AAFF>[T-MVP-B] "
+    suffix: ""
+    description: ["<gray>Tag de teste - tier MVP."]
+    rarity: "<#55AAFF>Teste"
+    source: "Teste 21/08"
+    category: teste
+    position: 8
+    purchasable: true
+    obtainable: true
+    price: { currency: gold, amount: 1 }
+    permission: ""
+    glow: false
+    item: { material: PAPER, name: "<#55AAFF>Teste MVP B" }
+  teste_mvp_c:
+    display: "<#55AAFF>Teste MVP C"
+    prefix: "<#55AAFF>[T-MVP-C] "
+    suffix: ""
+    description: ["<gray>Tag de teste - tier MVP."]
+    rarity: "<#55AAFF>Teste"
+    source: "Teste 21/08"
+    category: teste
+    position: 9
+    purchasable: true
+    obtainable: true
+    price: { currency: gold, amount: 1 }
+    permission: ""
+    glow: false
+    item: { material: PAPER, name: "<#55AAFF>Teste MVP C" }
+
+  teste_mvpplus_a:
+    display: "<#FF55FF>Teste MVP+ A"
+    prefix: "<#FF55FF>[T-MVP+A] "
+    suffix: ""
+    description: ["<gray>Tag de teste - tier MVP+."]
+    rarity: "<#FF55FF>Teste"
+    source: "Teste 21/08"
+    category: teste
+    position: 10
+    purchasable: true
+    obtainable: true
+    price: { currency: gold, amount: 1 }
+    permission: ""
+    glow: false
+    item: { material: PAPER, name: "<#FF55FF>Teste MVP+ A" }
+  teste_mvpplus_b:
+    display: "<#FF55FF>Teste MVP+ B"
+    prefix: "<#FF55FF>[T-MVP+B] "
+    suffix: ""
+    description: ["<gray>Tag de teste - tier MVP+."]
+    rarity: "<#FF55FF>Teste"
+    source: "Teste 21/08"
+    category: teste
+    position: 11
+    purchasable: true
+    obtainable: true
+    price: { currency: gold, amount: 1 }
+    permission: ""
+    glow: false
+    item: { material: PAPER, name: "<#FF55FF>Teste MVP+ B" }
+  teste_mvpplus_c:
+    display: "<#FF55FF>Teste MVP+ C"
+    prefix: "<#FF55FF>[T-MVP+C] "
+    suffix: ""
+    description: ["<gray>Tag de teste - tier MVP+."]
+    rarity: "<#FF55FF>Teste"
+    source: "Teste 21/08"
+    category: teste
+    position: 12
+    purchasable: true
+    obtainable: true
+    price: { currency: gold, amount: 1 }
+    permission: ""
+    glow: false
+    item: { material: PAPER, name: "<#FF55FF>Teste MVP+ C" }
+
+  teste_alka_a:
+    display: "<#FFD700>Teste ALKA A"
+    prefix: "<#FFD700>[T-ALKA-A] "
+    suffix: ""
+    description: ["<gray>Tag de teste - tier ALKA."]
+    rarity: "<#FFD700>Teste"
+    source: "Teste 21/08"
+    category: teste
+    position: 13
+    purchasable: true
+    obtainable: true
+    price: { currency: gold, amount: 1 }
+    permission: ""
+    glow: false
+    item: { material: PAPER, name: "<#FFD700>Teste ALKA A" }
+  teste_alka_b:
+    display: "<#FFD700>Teste ALKA B"
+    prefix: "<#FFD700>[T-ALKA-B] "
+    suffix: ""
+    description: ["<gray>Tag de teste - tier ALKA."]
+    rarity: "<#FFD700>Teste"
+    source: "Teste 21/08"
+    category: teste
+    position: 14
+    purchasable: true
+    obtainable: true
+    price: { currency: gold, amount: 1 }
+    permission: ""
+    glow: false
+    item: { material: PAPER, name: "<#FFD700>Teste ALKA B" }
+  teste_alka_c:
+    display: "<#FFD700>Teste ALKA C"
+    prefix: "<#FFD700>[T-ALKA-C] "
+    suffix: ""
+    description: ["<gray>Tag de teste - tier ALKA."]
+    rarity: "<#FFD700>Teste"
+    source: "Teste 21/08"
+    category: teste
+    position: 15
+    purchasable: true
+    obtainable: true
+    price: { currency: gold, amount: 1 }
+    permission: ""
+    glow: false
+    item: { material: PAPER, name: "<#FFD700>Teste ALKA C" }
+
+  teste_drakkar_a:
+    display: "<#FF0000>Teste DRAKKAR A"
+    prefix: "<#FF0000>[T-DRAKKAR-A] "
+    suffix: ""
+    description: ["<gray>Tag de teste - tier DRAKKAR."]
+    rarity: "<#FF0000>Teste"
+    source: "Teste 21/08"
+    category: teste
+    position: 16
+    purchasable: true
+    obtainable: true
+    price: { currency: gold, amount: 1 }
+    permission: ""
+    glow: true
+    item: { material: PAPER, name: "<#FF0000>Teste DRAKKAR A" }
+  teste_drakkar_b:
+    display: "<#FF0000>Teste DRAKKAR B"
+    prefix: "<#FF0000>[T-DRAKKAR-B] "
+    suffix: ""
+    description: ["<gray>Tag de teste - tier DRAKKAR."]
+    rarity: "<#FF0000>Teste"
+    source: "Teste 21/08"
+    category: teste
+    position: 17
+    purchasable: true
+    obtainable: true
+    price: { currency: gold, amount: 1 }
+    permission: ""
+    glow: true
+    item: { material: PAPER, name: "<#FF0000>Teste DRAKKAR B" }
+  teste_drakkar_c:
+    display: "<#FF0000>Teste DRAKKAR C"
+    prefix: "<#FF0000>[T-DRAKKAR-C] "
+    suffix: ""
+    description: ["<gray>Tag de teste - tier DRAKKAR."]
+    rarity: "<#FF0000>Teste"
+    source: "Teste 21/08"
+    category: teste
+    position: 18
+    purchasable: true
+    obtainable: true
+    price: { currency: gold, amount: 1 }
+    permission: ""
+    glow: true
+    item: { material: PAPER, name: "<#FF0000>Teste DRAKKAR C" }
