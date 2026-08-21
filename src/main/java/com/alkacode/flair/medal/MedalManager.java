@@ -63,6 +63,7 @@ public final class MedalManager {
                 s.getString("permission", ""),
                 s.getString("rarity", ""),
                 s.getString("source", ""),
+                s.getBoolean("exclusive", false),
                 s.getInt("position", 99),
                 ItemBuilder.fromConfig(s.getConfigurationSection("item"), plugin.getLogger())
         );

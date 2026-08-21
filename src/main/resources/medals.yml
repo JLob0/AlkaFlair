@@ -13,6 +13,11 @@ medals:
     rarity: "<white>Comum"
     # source e opcional, so pra hover/placeholder (%alkaflair_medal_<slot>_source%).
     source: ""
+    # exclusive (opcional, default false): "SIM"/"Nao" no placeholder
+    # %alkaflair_medal_<slot>_exclusive% - sinaliza que ninguem mais consegue essa
+    # medalha hoje (evento passado, edicao limitada). So nas medalhas - nas tags o
+    # campo `obtainable` ja cobre a mesma ideia.
+    exclusive: false
     position: 1
     item:
       material: EXPERIENCE_BOTTLE
@@ -87,6 +92,7 @@ medals:
     permission: ""
     rarity: "<light_purple>Teste"
     source: "Teste 21/08"
+    exclusive: true
     position: 8
     item: { material: PAPER, name: "<light_purple>Teste Medalha 5" }
   teste_medalha_6:

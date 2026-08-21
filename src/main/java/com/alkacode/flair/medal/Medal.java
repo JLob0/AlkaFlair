@@ -18,6 +18,7 @@ public record Medal(
         String permission,
         String rarity,
         String source,
+        boolean exclusive,
         int position,
         ItemStack item
 ) {

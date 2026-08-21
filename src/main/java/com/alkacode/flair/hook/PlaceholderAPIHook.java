@@ -25,7 +25,9 @@ import java.util.stream.Collectors;
  * %alkaflair_medal_slots%, %alkaflair_medal_<slot>%, %alkaflair_medal_<slot>_description%,
  * %alkaflair_medal_<slot>_rarity%, %alkaflair_medal_<slot>_source%,
  * %alkaflair_medal_<slot>_obtained% (dd/MM/yyyy HH:mm, vazio se desbloqueado antes de
- * 21/08 - sem historico pra unlocks anteriores a coluna unlocked_epoch existir)
+ * 21/08 - sem historico pra unlocks anteriores a coluna unlocked_epoch existir),
+ * %alkaflair_medal_<slot>_exclusive% ("SIM"/"Não" - so nas medalhas, nas tags o campo
+ * `obtainable` ja cobre a mesma ideia, exclusive la seria redundante)
  * (slot = posicao 1-based entre as medalhas EQUIPADAS, ordenado por Medal#position -
  * mesma ordem de %alkaflair_medals%), %alkaflair_has_medal_<id>%. Identificador
  * "alkaflair" - grep confirmou nao colidir com nenhuma expansion existente na rede.
@@ -141,6 +143,7 @@ public final class PlaceholderAPIHook extends PlaceholderExpansion {
             case "rarity" -> toLegacy(medal.rarity());
             case "source" -> toLegacy(medal.source());
             case "obtained" -> formatObtained(data.unlockedMedalEpochs().get(medal.id()));
+            case "exclusive" -> medal.exclusive() ? "§a§lSIM" : "§cNão";
             default -> null;
         };
     }
