@@ -1,6 +1,8 @@
 package com.alkacode.flair.gui;
 
 import com.alkacode.core.gui.BaseGui;
+import com.alkacode.flair.config.MenuConfig;
+import com.alkacode.flair.gui.layout.GuiLayoutLoader;
 import com.alkacode.flair.manager.FlairPlayerDataManager;
 import com.alkacode.flair.medal.Medal;
 import com.alkacode.flair.model.PlayerFlairData;
@@ -8,7 +10,6 @@ import com.alkacode.flair.service.MedalService;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.minimessage.MiniMessage;
-import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemFlag;
@@ -18,6 +19,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Grade de medalhas - desbloqueadas primeiro (ordenadas por position), bloqueadas
@@ -28,24 +30,21 @@ import java.util.List;
 public final class MedalsMenu extends BaseGui {
 
     private static final MiniMessage MM = MiniMessage.miniMessage();
-    private static final int[] GRID_SLOTS = {
-            10, 11, 12, 13, 14, 15, 16,
-            19, 20, 21, 22, 23, 24, 25,
-            28, 29, 30, 31, 32, 33, 34
-    };
 
     private final MedalService medalService;
     private final FlairPlayerDataManager dataManager;
 
     public MedalsMenu(JavaPlugin plugin, Player viewer, MedalService medalService, FlairPlayerDataManager dataManager) {
-        super(plugin, viewer, "<dark_gray>Medalhas", 5, "flair_medals");
+        super(plugin, viewer, MenuConfig.getInstance().title("flair_medals.title", null), 5, "flair_medals");
         this.medalService = medalService;
         this.dataManager = dataManager;
     }
 
     @Override
     public void render() {
-        fillBorder(createItem(Material.BLACK_STAINED_GLASS_PANE, " "));
+        GuiLayoutLoader.GuiLayout layout = GuiLayoutLoader.getInstance().getLayout("flair_medals");
+        MenuConfig menu = MenuConfig.getInstance();
+        fillBorder(menu.item("common.border", null));
 
         PlayerFlairData data = dataManager.get(player.getUniqueId());
         List<Medal> ordered = medalService.medalManager().ordered();
@@ -61,15 +60,16 @@ public final class MedalsMenu extends BaseGui {
         List<Medal> display = new ArrayList<>(unlocked);
         display.addAll(locked);
 
-        for (int i = 0; i < GRID_SLOTS.length && i < display.size(); i++) {
+        List<Integer> gridSlots = layout.findSlots('0');
+        for (int i = 0; i < gridSlots.size() && i < display.size(); i++) {
             Medal medal = display.get(i);
             boolean isUnlocked = unlocked.contains(medal);
             boolean equipped = data != null && data.equippedMedalIds().contains(medal.id());
-            setItem(GRID_SLOTS[i], buildIcon(medal, isUnlocked, equipped, data), event -> onClick(medal, isUnlocked));
+            setItem(gridSlots.get(i), buildIcon(medal, isUnlocked, equipped, data), event -> onClick(medal, isUnlocked));
         }
 
         String slotsInfo = data != null ? data.equippedMedalIds().size() + "/" + data.maxMedalSlots() : "0/0";
-        setItem(40, createItem(Material.PAPER, "<gray>Slots equipados: <white>" + slotsInfo));
+        setItem(layout.firstSlot('S'), menu.item("flair_medals.slots-info", Map.of("slots", slotsInfo)));
     }
 
     private void onClick(Medal medal, boolean unlocked) {
@@ -85,26 +85,23 @@ public final class MedalsMenu extends BaseGui {
         } else {
             MedalService.EquipResult result = medalService.equip(player, data, medal);
             if (result == MedalService.EquipResult.SLOTS_FULL) {
-                player.sendMessage(component("<red>Você já tem o máximo de medalhas equipadas (<white>" + data.maxMedalSlots() + "</white>)."));
+                player.sendMessage(component(MenuConfig.getInstance().text("flair_medals.slots-cheio",
+                        Map.of("max", String.valueOf(data.maxMedalSlots())))));
             }
         }
         refresh();
     }
 
     private ItemStack buildIcon(Medal medal, boolean unlocked, boolean equipped, PlayerFlairData data) {
+        MenuConfig menu = MenuConfig.getInstance();
         if (!unlocked) {
-            ItemStack barrier = new ItemStack(Material.BARRIER);
-            ItemMeta meta = barrier.getItemMeta();
-            meta.displayName(component("<dark_red><bold>Bloqueada"));
-            meta.lore(List.of(component("<red>" + plain(medal.name())), component(" "),
-                    component("<gray>Você não possui esta medalha.")));
-            barrier.setItemMeta(meta);
-            return barrier;
+            return menu.item("flair_medals.bloqueada", Map.of("nome", plain(medal.name())));
         }
 
         ItemStack item = medal.item().clone();
         ItemMeta meta = item.getItemMeta();
-        String prefix = equipped ? "<green><bold>✔ " : "<white>";
+        String prefixPath = equipped ? "flair_medals.prefixo-equipada" : "flair_medals.prefixo-desbloqueada";
+        String prefix = menu.text(prefixPath, null);
         meta.displayName(component(prefix + plain(medal.name())));
 
         List<Component> lore = new ArrayList<>();
@@ -112,10 +109,10 @@ public final class MedalsMenu extends BaseGui {
             lore.add(component(line));
         }
         if (!medal.rarity().isBlank()) {
-            lore.add(component("<gray>Raridade: " + medal.rarity()));
+            lore.add(component(menu.text("flair_medals.estado-raridade", Map.of("raridade", medal.rarity()))));
         }
         lore.add(component(" "));
-        lore.add(component(equipped ? "<yellow>Clique para desequipar" : "<yellow>Clique para equipar"));
+        lore.add(component(menu.text(equipped ? "flair_medals.estado-desequipar" : "flair_medals.estado-equipar", null)));
         meta.lore(lore);
         if (equipped) {
             meta.addEnchant(Enchantment.UNBREAKING, 1, true);

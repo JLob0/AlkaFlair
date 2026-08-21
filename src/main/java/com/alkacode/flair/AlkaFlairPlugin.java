@@ -8,6 +8,8 @@ import com.alkacode.flair.api.AlkaFlairAPIProvider;
 import com.alkacode.flair.command.MedalCommand;
 import com.alkacode.flair.command.TagCommand;
 import com.alkacode.flair.config.FlairConfig;
+import com.alkacode.flair.config.MenuConfig;
+import com.alkacode.flair.gui.layout.GuiLayoutLoader;
 import com.alkacode.flair.hook.LuckPermsHook;
 import com.alkacode.flair.hook.PlaceholderAPIHook;
 import com.alkacode.flair.listener.PlayerJoinListener;
@@ -50,6 +52,8 @@ public final class AlkaFlairPlugin extends AlkaPlugin {
         }
 
         config = new FlairConfig(this);
+        MenuConfig.init(this);
+        GuiLayoutLoader.init(this);
         tagManager = new TagManager(this);
         medalManager = new MedalManager(this);
 

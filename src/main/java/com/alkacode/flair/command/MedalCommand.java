@@ -194,6 +194,7 @@ public final class MedalCommand implements CommandExecutor, TabCompleter {
             return true;
         }
         config.reload();
+        com.alkacode.flair.config.MenuConfig.getInstance().reload();
         medalService.medalManager().load();
         send(sender, config.message("reload"));
         return true;

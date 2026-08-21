@@ -1,0 +1,34 @@
+# AlkaFlair - Layouts de GUI (posicoes configuraveis)
+# Regras (mesmo mecanismo do AlkaFish):
+#   # = borda preta (preenche automatico via fillBorder, uma letra pode sobrepor)
+#   _ = vazio (nunca preenchido por um role)
+#   Letras = slots com papel fixo/repetido (icone/texto vem de menus.yml.<menu>.<papel>)
+#   0 = slot de lista dinamica (tags/medalhas reais - icone vem do proprio Tag/Medal, nao daqui)
+
+flair_tags:
+  rows: 5
+  layout:
+    - "CCCCCCCCC"
+    - "#0000000#"
+    - "#0000000#"
+    - "#0000000#"
+    - "#########"
+  # C=aba de categoria (ate 9), 0=tag da categoria ativa (ate 21)
+
+flair_medals:
+  rows: 5
+  layout:
+    - "#########"
+    - "#0000000#"
+    - "#0000000#"
+    - "#0000000#"
+    - "####S####"
+  # 0=medalha (desbloqueadas primeiro, depois bloqueadas - ate 21), S=slots equipados
+
+flair_tag_confirm:
+  rows: 3
+  layout:
+    - "#########"
+    - "#_C_P_N_#"
+    - "#########"
+  # C=confirmar, P=preview da tag, N=cancelar

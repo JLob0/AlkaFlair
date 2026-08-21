@@ -1,0 +1,66 @@
+# AlkaFlair - menus.yml
+# Titulos, nomes e lores das GUIs, editaveis sem recompilar. Placeholders entre {}
+# sao trocados na hora. MiniMessage. Layout/posicao dos slots fica em gui-layouts.yml.
+# Icones de tags/medalhas reais (o que o jogador realmente ve na grade) continuam
+# vindo do proprio Tag/Medal (definidos em tags.yml/medals.yml) - aqui so fica
+# o "molde" (chrome) do menu: bordas, prefixos de estado, botoes.
+
+common:
+  border:
+    material: BLACK_STAINED_GLASS_PANE
+    name: " "
+
+# ------------------------- Tags -------------------------
+flair_tags:
+  title: "<dark_gray>Tags"
+  categoria-ativa:
+    material: YELLOW_STAINED_GLASS_PANE
+    name: "{nome}"
+  categoria-inativa:
+    material: GRAY_STAINED_GLASS_PANE
+    name: "{nome}"
+  prefixo-equipada: "<green><bold>✔ "
+  prefixo-desbloqueada: "<white>"
+  prefixo-bloqueada: "<gray>"
+  estado-equipada: "<green>Equipada"
+  estado-equipada-clique: "<green>Equipada <gray>(clique para remover)"
+  estado-desbloqueada: "<yellow>Clique para equipar"
+  estado-comprar-preco: "<gold>Preço: <white>{preco} {moeda}"
+  estado-comprar-clique: "<yellow>Clique para comprar"
+  estado-indisponivel: "<red>Indisponível"
+
+# ------------------------- Medalhas -------------------------
+flair_medals:
+  title: "<dark_gray>Medalhas"
+  bloqueada:
+    material: BARRIER
+    name: "<dark_red><bold>Bloqueada"
+    lore:
+      - "<red>{nome}"
+      - " "
+      - "<gray>Você não possui esta medalha."
+  slots-info:
+    material: PAPER
+    name: "<gray>Slots equipados: <white>{slots}"
+  prefixo-equipada: "<green><bold>✔ "
+  prefixo-desbloqueada: "<white>"
+  estado-raridade: "<gray>Raridade: {raridade}"
+  estado-desequipar: "<yellow>Clique para desequipar"
+  estado-equipar: "<yellow>Clique para equipar"
+  slots-cheio: "<red>Você já tem o máximo de medalhas equipadas (<white>{max}</white>)."
+
+# ------------------------- Confirmar compra de tag -------------------------
+flair_tag_confirm:
+  title: "<dark_gray>Confirmar Compra"
+  confirmar:
+    material: LIME_WOOL
+    name: "<green><bold>Confirmar"
+    lore:
+      - "<gray>Comprar por <white>{preco} {moeda}"
+  cancelar:
+    material: RED_WOOL
+    name: "<red><bold>Cancelar"
+    lore:
+      - ""
+  compra-sucesso: "<green>Tag comprada com sucesso!"
+  saldo-insuficiente: "<red>Você não tem saldo suficiente."

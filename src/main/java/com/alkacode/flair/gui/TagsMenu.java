@@ -1,6 +1,8 @@
 package com.alkacode.flair.gui;
 
 import com.alkacode.core.gui.BaseGui;
+import com.alkacode.flair.config.MenuConfig;
+import com.alkacode.flair.gui.layout.GuiLayoutLoader;
 import com.alkacode.flair.manager.FlairPlayerDataManager;
 import com.alkacode.flair.model.PlayerFlairData;
 import com.alkacode.flair.service.FlairEconomyService;
@@ -10,7 +12,6 @@ import com.alkacode.flair.tag.TagCategory;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.minimessage.MiniMessage;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemFlag;
@@ -20,17 +21,12 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /** Grade paginada de tags por categoria - clique equipa (se desbloqueada) ou abre confirmacao de compra. */
 public final class TagsMenu extends BaseGui {
 
     private static final MiniMessage MM = MiniMessage.miniMessage();
-    private static final int[] CATEGORY_SLOTS = {0, 1, 2, 3, 4, 5, 6, 7, 8};
-    private static final int[] GRID_SLOTS = {
-            10, 11, 12, 13, 14, 15, 16,
-            19, 20, 21, 22, 23, 24, 25,
-            28, 29, 30, 31, 32, 33, 34
-    };
 
     private final TagService tagService;
     private final FlairEconomyService economyService;
@@ -39,7 +35,7 @@ public final class TagsMenu extends BaseGui {
 
     public TagsMenu(JavaPlugin plugin, Player viewer, TagService tagService, FlairEconomyService economyService,
                      FlairPlayerDataManager dataManager) {
-        super(plugin, viewer, "<dark_gray>Tags", 5, "flair_tags");
+        super(plugin, viewer, MenuConfig.getInstance().title("flair_tags.title", null), 5, "flair_tags");
         this.tagService = tagService;
         this.economyService = economyService;
         this.dataManager = dataManager;
@@ -49,32 +45,35 @@ public final class TagsMenu extends BaseGui {
 
     @Override
     public void render() {
-        fillBorder(createItem(Material.BLACK_STAINED_GLASS_PANE, " "));
+        GuiLayoutLoader.GuiLayout layout = GuiLayoutLoader.getInstance().getLayout("flair_tags");
+        MenuConfig menu = MenuConfig.getInstance();
+        fillBorder(menu.item("common.border", null));
 
+        List<Integer> categorySlots = layout.findSlots('C');
         List<TagCategory> categories = tagService.tagManager().orderedCategories();
-        for (int i = 0; i < categories.size() && i < CATEGORY_SLOTS.length; i++) {
+        for (int i = 0; i < categories.size() && i < categorySlots.size(); i++) {
             TagCategory category = categories.get(i);
             boolean active = category.id().equals(activeCategory);
+            String path = active ? "flair_tags.categoria-ativa" : "flair_tags.categoria-inativa";
             String label = (active ? "<bold>" : "") + category.display();
-            setItem(CATEGORY_SLOTS[i],
-                    createItem(active ? Material.YELLOW_STAINED_GLASS_PANE : Material.GRAY_STAINED_GLASS_PANE, label),
-                    event -> {
-                        activeCategory = category.id();
-                        refresh();
-                    });
+            setItem(categorySlots.get(i), menu.item(path, Map.of("nome", label)), event -> {
+                activeCategory = category.id();
+                refresh();
+            });
         }
 
-        renderGrid();
+        renderGrid(layout);
     }
 
-    private void renderGrid() {
+    private void renderGrid(GuiLayoutLoader.GuiLayout layout) {
+        List<Integer> gridSlots = layout.findSlots('0');
         List<Tag> tags = tagService.tagManager().tagsInCategory(activeCategory);
         PlayerFlairData data = dataManager.get(player.getUniqueId());
-        for (int i = 0; i < GRID_SLOTS.length && i < tags.size(); i++) {
+        for (int i = 0; i < gridSlots.size() && i < tags.size(); i++) {
             Tag tag = tags.get(i);
             boolean unlocked = data != null && tagService.isUnlocked(player, data, tag);
             boolean equipped = data != null && tag.id().equals(data.equippedTagId());
-            setItem(GRID_SLOTS[i], buildTagIcon(tag, unlocked, equipped), event -> onClick(tag, unlocked));
+            setItem(gridSlots.get(i), buildTagIcon(tag, unlocked, equipped), event -> onClick(tag, unlocked));
         }
     }
 
@@ -99,9 +98,12 @@ public final class TagsMenu extends BaseGui {
     }
 
     private ItemStack buildTagIcon(Tag tag, boolean unlocked, boolean equipped) {
+        MenuConfig menu = MenuConfig.getInstance();
         ItemStack item = tag.item().clone();
         ItemMeta meta = item.getItemMeta();
-        String prefix = equipped ? "<green><bold>✔ " : unlocked ? "<white>" : "<gray>";
+        String prefixPath = equipped ? "flair_tags.prefixo-equipada"
+                : unlocked ? "flair_tags.prefixo-desbloqueada" : "flair_tags.prefixo-bloqueada";
+        String prefix = menu.text(prefixPath, null);
         meta.displayName(component(prefix + plain(tag.display())));
 
         List<Component> lore = new ArrayList<>();
@@ -110,16 +112,16 @@ public final class TagsMenu extends BaseGui {
         }
         lore.add(component(" "));
         if (equipped) {
-            lore.add(component(tagService.forceEquipped()
-                    ? "<green>Equipada"
-                    : "<green>Equipada <gray>(clique para remover)"));
+            lore.add(component(menu.text(tagService.forceEquipped()
+                    ? "flair_tags.estado-equipada" : "flair_tags.estado-equipada-clique", null)));
         } else if (unlocked) {
-            lore.add(component("<yellow>Clique para equipar"));
+            lore.add(component(menu.text("flair_tags.estado-desbloqueada", null)));
         } else if (tag.purchasable()) {
-            lore.add(component("<gold>Preço: <white>" + economyService.formatAmount(tag.priceAmount()) + " " + tag.priceCurrency()));
-            lore.add(component("<yellow>Clique para comprar"));
+            lore.add(component(menu.text("flair_tags.estado-comprar-preco",
+                    Map.of("preco", economyService.formatAmount(tag.priceAmount()), "moeda", tag.priceCurrency()))));
+            lore.add(component(menu.text("flair_tags.estado-comprar-clique", null)));
         } else {
-            lore.add(component("<red>Indisponível"));
+            lore.add(component(menu.text("flair_tags.estado-indisponivel", null)));
         }
         meta.lore(lore);
         if (equipped) {

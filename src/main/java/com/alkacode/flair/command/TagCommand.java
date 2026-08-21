@@ -291,6 +291,7 @@ public final class TagCommand implements CommandExecutor, TabCompleter {
             return true;
         }
         config.reload();
+        com.alkacode.flair.config.MenuConfig.getInstance().reload();
         tagService.tagManager().load();
         send(sender, config.message("reload"));
         return true;
