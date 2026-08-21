@@ -62,6 +62,7 @@ public final class MedalManager {
                 s.getStringList("description"),
                 s.getString("permission", ""),
                 s.getString("rarity", ""),
+                s.getString("source", ""),
                 s.getInt("position", 99),
                 ItemBuilder.fromConfig(s.getConfigurationSection("item"), plugin.getLogger())
         );

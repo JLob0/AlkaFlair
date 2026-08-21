@@ -17,6 +17,7 @@ public record Medal(
         List<String> description,
         String permission,
         String rarity,
+        String source,
         int position,
         ItemStack item
 ) {

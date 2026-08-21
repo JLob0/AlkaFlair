@@ -17,6 +17,8 @@ public record Tag(
         String prefix,
         String suffix,
         List<String> description,
+        String rarity,
+        String source,
         String category,
         int position,
         boolean purchasable,

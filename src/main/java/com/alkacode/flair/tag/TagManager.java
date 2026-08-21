@@ -82,6 +82,8 @@ public final class TagManager {
                 s.getString("prefix", ""),
                 s.getString("suffix", ""),
                 s.getStringList("description"),
+                s.getString("rarity", ""),
+                s.getString("source", ""),
                 s.getString("category", "default").toLowerCase(),
                 s.getInt("position", 99),
                 s.getBoolean("purchasable", false),

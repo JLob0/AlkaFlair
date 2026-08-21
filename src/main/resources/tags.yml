@@ -28,6 +28,10 @@ tags:
     suffix: ""
     description:
       - "<gray>Tag destinada aos donos do servidor."
+    # rarity/source sao opcionais, so pra hover/placeholder (%alkaflair_tag_rarity%,
+    # %alkaflair_tag_source%) - vazio por padrao se nao setar.
+    rarity: ""
+    source: ""
     category: staff
     position: 1
     purchasable: false
