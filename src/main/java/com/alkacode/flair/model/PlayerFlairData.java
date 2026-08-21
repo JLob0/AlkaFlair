@@ -1,6 +1,8 @@
 package com.alkacode.flair.model;
 
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
@@ -17,6 +19,8 @@ public final class PlayerFlairData {
     private final Set<String> unlockedTagIds = new HashSet<>();
     private final Set<String> unlockedMedalIds = new HashSet<>();
     private final Set<String> equippedMedalIds = new HashSet<>();
+    private final Map<String, Long> unlockedTagEpochs = new HashMap<>();
+    private final Map<String, Long> unlockedMedalEpochs = new HashMap<>();
     private String equippedTagId;
     private String ownPrefix;
     private String ownSuffix;
@@ -43,6 +47,15 @@ public final class PlayerFlairData {
 
     public Set<String> equippedMedalIds() {
         return equippedMedalIds;
+    }
+
+    /** id -> epoch (segundos) em que foi desbloqueada - 0/ausente se nunca registrado. */
+    public Map<String, Long> unlockedTagEpochs() {
+        return unlockedTagEpochs;
+    }
+
+    public Map<String, Long> unlockedMedalEpochs() {
+        return unlockedMedalEpochs;
     }
 
     public String equippedTagId() {

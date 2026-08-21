@@ -20,10 +20,12 @@ import java.util.stream.Collectors;
 /**
  * %alkaflair_tag%, %alkaflair_tag_prefix%, %alkaflair_tag_suffix%, %alkaflair_tag_id%,
  * %alkaflair_tag_count%, %alkaflair_tag_description%, %alkaflair_tag_rarity%,
- * %alkaflair_tag_source%, %alkaflair_has_tag_<id>%, %alkaflair_can_afford_<id>%,
- * %alkaflair_medals%, %alkaflair_medal_count%, %alkaflair_medal_slots%,
- * %alkaflair_medal_<slot>%, %alkaflair_medal_<slot>_description%,
- * %alkaflair_medal_<slot>_rarity%, %alkaflair_medal_<slot>_source%
+ * %alkaflair_tag_source%, %alkaflair_tag_obtained%, %alkaflair_has_tag_<id>%,
+ * %alkaflair_can_afford_<id>%, %alkaflair_medals%, %alkaflair_medal_count%,
+ * %alkaflair_medal_slots%, %alkaflair_medal_<slot>%, %alkaflair_medal_<slot>_description%,
+ * %alkaflair_medal_<slot>_rarity%, %alkaflair_medal_<slot>_source%,
+ * %alkaflair_medal_<slot>_obtained% (dd/MM/yyyy HH:mm, vazio se desbloqueado antes de
+ * 21/08 - sem historico pra unlocks anteriores a coluna unlocked_epoch existir)
  * (slot = posicao 1-based entre as medalhas EQUIPADAS, ordenado por Medal#position -
  * mesma ordem de %alkaflair_medals%), %alkaflair_has_medal_<id>%. Identificador
  * "alkaflair" - grep confirmou nao colidir com nenhuma expansion existente na rede.
@@ -104,6 +106,7 @@ public final class PlaceholderAPIHook extends PlaceholderExpansion {
             case "tag_description" -> data != null ? toLegacy(equippedTagField(data, Tag::description)) : "";
             case "tag_rarity" -> data != null ? toLegacy(equippedTagField(data, Tag::rarity)) : "";
             case "tag_source" -> data != null ? toLegacy(equippedTagField(data, Tag::source)) : "";
+            case "tag_obtained" -> data != null ? formatObtained(data.unlockedTagEpochs().get(data.equippedTagId())) : "";
             case "medals" -> data != null ? toLegacy(equippedMedalsConcat(data)) : "";
             case "medal_count" -> String.valueOf(data != null ? data.unlockedMedalIds().size() : 0);
             case "medal_slots" -> data != null ? data.equippedMedalIds().size() + "/" + data.maxMedalSlots() : "0/0";
@@ -137,8 +140,22 @@ public final class PlaceholderAPIHook extends PlaceholderExpansion {
             case "description" -> toLegacy(String.join(" ", medal.description()));
             case "rarity" -> toLegacy(medal.rarity());
             case "source" -> toLegacy(medal.source());
+            case "obtained" -> formatObtained(data.unlockedMedalEpochs().get(medal.id()));
             default -> null;
         };
+    }
+
+    private static final java.time.format.DateTimeFormatter OBTAINED_FORMAT =
+            java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
+
+    /** epoch em segundos -> "dd/MM/yyyy HH:mm". Null/0 = nunca registrado (unlock de
+     * antes da coluna unlocked_epoch existir, 21/08) - vazio, sem inventar data. */
+    private String formatObtained(Long epochSeconds) {
+        if (epochSeconds == null || epochSeconds <= 0) {
+            return "";
+        }
+        return OBTAINED_FORMAT.format(java.time.Instant.ofEpochSecond(epochSeconds)
+                .atZone(java.time.ZoneId.systemDefault()));
     }
 
     private List<Medal> equippedMedalsOrdered(PlayerFlairData data) {

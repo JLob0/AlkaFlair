@@ -8,7 +8,9 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.logging.Level;
@@ -42,6 +44,7 @@ public final class FlairRepository extends AbstractRepository {
                     CREATE TABLE IF NOT EXISTS alka_flair_unlocked_tags (
                         player_uuid VARCHAR(36) NOT NULL,
                         tag_id VARCHAR(64) NOT NULL,
+                        unlocked_epoch BIGINT DEFAULT 0,
                         PRIMARY KEY (player_uuid, tag_id)
                     )
                     """);
@@ -49,9 +52,12 @@ public final class FlairRepository extends AbstractRepository {
                     CREATE TABLE IF NOT EXISTS alka_flair_unlocked_medals (
                         player_uuid VARCHAR(36) NOT NULL,
                         medal_id VARCHAR(64) NOT NULL,
+                        unlocked_epoch BIGINT DEFAULT 0,
                         PRIMARY KEY (player_uuid, medal_id)
                     )
                     """);
+            addColumnIfMissing(conn, "alka_flair_unlocked_tags", "unlocked_epoch", "BIGINT DEFAULT 0");
+            addColumnIfMissing(conn, "alka_flair_unlocked_medals", "unlocked_epoch", "BIGINT DEFAULT 0");
             stmt.execute("""
                     CREATE TABLE IF NOT EXISTS alka_flair_equipped_medals (
                         player_uuid VARCHAR(36) NOT NULL,
@@ -61,6 +67,17 @@ public final class FlairRepository extends AbstractRepository {
                     """);
         } catch (SQLException e) {
             logger.log(Level.SEVERE, "Erro ao criar tabelas do AlkaFlair", e);
+        }
+    }
+
+    /** Migracao best-effort pra bancos ja existentes de antes da coluna unlocked_epoch
+     * (21/08) - o CREATE TABLE IF NOT EXISTS acima so cobre banco novo. Erro aqui so
+     * significa "coluna ja existe", ignorado de proposito (nem SQLite nem MySQL tem um
+     * "ADD COLUMN IF NOT EXISTS" universal via JDBC simples). */
+    private void addColumnIfMissing(Connection conn, String table, String column, String definition) {
+        try (var stmt = conn.createStatement()) {
+            stmt.execute("ALTER TABLE " + table + " ADD COLUMN " + column + " " + definition);
+        } catch (SQLException ignored) {
         }
     }
 
@@ -85,6 +102,8 @@ public final class FlairRepository extends AbstractRepository {
         data.unlockedTagIds().addAll(loadIdSet(uuid, "alka_flair_unlocked_tags", "tag_id"));
         data.unlockedMedalIds().addAll(loadIdSet(uuid, "alka_flair_unlocked_medals", "medal_id"));
         data.equippedMedalIds().addAll(loadIdSet(uuid, "alka_flair_equipped_medals", "medal_id"));
+        data.unlockedTagEpochs().putAll(loadUnlockedTagEpochs(uuid));
+        data.unlockedMedalEpochs().putAll(loadUnlockedMedalEpochs(uuid));
         return data;
     }
 
@@ -124,15 +143,58 @@ public final class FlairRepository extends AbstractRepository {
     }
 
     public void addUnlockedTag(UUID uuid, String tagId) {
-        insertIgnore("alka_flair_unlocked_tags", "tag_id", uuid, tagId);
+        insertIgnoreWithTimestamp("alka_flair_unlocked_tags", "tag_id", uuid, tagId);
     }
 
     public void removeUnlockedTag(UUID uuid, String tagId) {
         deleteId("alka_flair_unlocked_tags", "tag_id", uuid, tagId);
     }
 
+    /** epoch (segundos) em que o jogador desbloqueou cada tag/medalha - 0 se nunca
+     * registrado (unlocks de antes da coluna existir, 21/08). */
+    public Map<String, Long> loadUnlockedTagEpochs(UUID uuid) {
+        return loadEpochMap(uuid, "alka_flair_unlocked_tags", "tag_id");
+    }
+
+    public Map<String, Long> loadUnlockedMedalEpochs(UUID uuid) {
+        return loadEpochMap(uuid, "alka_flair_unlocked_medals", "medal_id");
+    }
+
+    private Map<String, Long> loadEpochMap(UUID uuid, String table, String idColumn) {
+        Map<String, Long> result = new HashMap<>();
+        String sql = "SELECT " + idColumn + ", unlocked_epoch FROM " + table + " WHERE player_uuid = ?";
+        try (Connection conn = db.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, uuid.toString());
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    result.put(rs.getString(idColumn), rs.getLong("unlocked_epoch"));
+                }
+            }
+        } catch (SQLException e) {
+            logger.log(Level.SEVERE, "Erro ao carregar unlocked_epoch de " + table + " para " + uuid, e);
+        }
+        return result;
+    }
+
+    /** INSERT direto (nao via upsert()) de proposito: com unlocked_epoch a mais que as
+     * colunas de chave, upsert() vira "ON CONFLICT DO UPDATE" (MySQL/SQLite), o que
+     * reescreveria a data original toda vez que /tags add repetisse um id ja
+     * desbloqueado. Aqui e sempre "insere so na primeira vez, ignora depois". */
+    private void insertIgnoreWithTimestamp(String table, String idColumn, UUID uuid, String id) {
+        String sql = (db.isSQLite() ? "INSERT OR IGNORE INTO " : "INSERT IGNORE INTO ")
+                + table + " (player_uuid, " + idColumn + ", unlocked_epoch) VALUES (?, ?, ?)";
+        try (Connection conn = db.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, uuid.toString());
+            ps.setString(2, id);
+            ps.setLong(3, System.currentTimeMillis() / 1000L);
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            logger.log(Level.SEVERE, "Erro ao inserir em " + table + " para " + uuid, e);
+        }
+    }
+
     public void addUnlockedMedal(UUID uuid, String medalId) {
-        insertIgnore("alka_flair_unlocked_medals", "medal_id", uuid, medalId);
+        insertIgnoreWithTimestamp("alka_flair_unlocked_medals", "medal_id", uuid, medalId);
     }
 
     public void removeUnlockedMedal(UUID uuid, String medalId) {
