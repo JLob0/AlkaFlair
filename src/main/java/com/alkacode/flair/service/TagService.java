@@ -1,6 +1,7 @@
 package com.alkacode.flair.service;
 
 import com.alkacode.flair.config.FlairConfig;
+import com.alkacode.flair.floating.FloatingTagManager;
 import com.alkacode.flair.hook.LuckPermsHook;
 import com.alkacode.flair.manager.FlairPlayerDataManager;
 import com.alkacode.flair.model.PlayerFlairData;
@@ -28,14 +29,16 @@ public final class TagService {
     private final FlairEconomyService economyService;
     private final LuckPermsHook luckPermsHook;
     private final FlairConfig config;
+    private final FloatingTagManager floatingTagManager;
 
     public TagService(TagManager tagManager, FlairPlayerDataManager dataManager, FlairEconomyService economyService,
-                       LuckPermsHook luckPermsHook, FlairConfig config) {
+                       LuckPermsHook luckPermsHook, FlairConfig config, FloatingTagManager floatingTagManager) {
         this.tagManager = tagManager;
         this.dataManager = dataManager;
         this.economyService = economyService;
         this.luckPermsHook = luckPermsHook;
         this.config = config;
+        this.floatingTagManager = floatingTagManager;
     }
 
     /** Desbloqueada = esta no set do jogador OU (tag tem permission-gate E o jogador tem essa permissao). So funciona pra jogador ONLINE (permission live). */
@@ -65,12 +68,21 @@ public final class TagService {
         data.equippedTagId(tag.id());
         dataManager.savePlayerRow(data);
         feedback(player, tag);
+        refreshFloating(player, data);
         return EquipResult.SUCCESS;
     }
 
-    public void unequip(PlayerFlairData data) {
+    public void unequip(Player player, PlayerFlairData data) {
         data.equippedTagId(null);
         dataManager.savePlayerRow(data);
+        refreshFloating(player, data);
+    }
+
+    /** Recalcula a tag flutuante 3D so se o recurso estiver disponivel (PacketEvents instalado). */
+    private void refreshFloating(Player player, PlayerFlairData data) {
+        if (floatingTagManager != null) {
+            floatingTagManager.refresh(player, data);
+        }
     }
 
     public boolean forceEquipped() {
@@ -129,23 +141,36 @@ public final class TagService {
         }
     }
 
+    /** Admin (/tags del) - alvo pode estar offline, so refresca a tag flutuante se estiver online agora. */
     public void revoke(PlayerFlairData data, Tag tag) {
         dataManager.removeUnlockedTag(data, tag.id());
         if (tag.id().equals(data.equippedTagId())) {
-            unequip(data);
+            data.equippedTagId(null);
+            dataManager.savePlayerRow(data);
+            Player online = Bukkit.getPlayer(data.uuid());
+            if (online != null) {
+                refreshFloating(online, data);
+            }
         }
     }
 
-    public void setOwn(PlayerFlairData data, String prefix, String suffix) {
+    /** onlinePlayer: null se o alvo (possivelmente offline) do /tags setar nao estiver online agora. */
+    public void setOwn(Player onlinePlayer, PlayerFlairData data, String prefix, String suffix) {
         data.ownPrefix(prefix);
         data.ownSuffix(suffix);
         dataManager.savePlayerRow(data);
+        if (onlinePlayer != null) {
+            refreshFloating(onlinePlayer, data);
+        }
     }
 
-    public void clearOwn(PlayerFlairData data) {
+    public void clearOwn(Player onlinePlayer, PlayerFlairData data) {
         data.ownPrefix(null);
         data.ownSuffix(null);
         dataManager.savePlayerRow(data);
+        if (onlinePlayer != null) {
+            refreshFloating(onlinePlayer, data);
+        }
     }
 
     public TagManager tagManager() {

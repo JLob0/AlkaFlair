@@ -9,6 +9,8 @@ import com.alkacode.flair.command.MedalCommand;
 import com.alkacode.flair.command.TagCommand;
 import com.alkacode.flair.config.FlairConfig;
 import com.alkacode.flair.config.MenuConfig;
+import com.alkacode.flair.floating.FloatingTagListener;
+import com.alkacode.flair.floating.FloatingTagManager;
 import com.alkacode.flair.gui.layout.GuiLayoutLoader;
 import com.alkacode.flair.hook.LuckPermsHook;
 import com.alkacode.flair.hook.PlaceholderAPIHook;
@@ -63,8 +65,22 @@ public final class AlkaFlairPlugin extends AlkaPlugin {
         FlairEconomyService economyService = new FlairEconomyService(alkaEconomy.getEconomyManager());
         LuckPermsHook luckPermsHook = new LuckPermsHook(getLogger());
 
-        tagService = new TagService(tagManager, dataManager, economyService, luckPermsHook, config);
-        medalService = new MedalService(medalManager, dataManager, luckPermsHook, config.medalsGrantPermissionOnUnlock());
+        // Tag flutuante 3D acima da cabeca (TextDisplay via packet) - softdepend em
+        // PacketEvents, ja permanente na rede. Sem ele instalado, o recurso so fica
+        // desligado (floatingTagManager fica null, todo mundo usa refresh() null-safe).
+        FloatingTagManager floatingTagManager = null;
+        if (getServer().getPluginManager().getPlugin("packetevents") != null) {
+            floatingTagManager = new FloatingTagManager(tagManager, medalManager, config);
+            getServer().getPluginManager().registerEvents(
+                    new FloatingTagListener(this, floatingTagManager, dataManager), this);
+            getLogger().info("PacketEvents detectado - tag flutuante 3D habilitada.");
+        } else {
+            getLogger().info("PacketEvents nao encontrado - tag flutuante 3D desabilitada (so cosmetico, resto do plugin funciona normal).");
+        }
+
+        tagService = new TagService(tagManager, dataManager, economyService, luckPermsHook, config, floatingTagManager);
+        medalService = new MedalService(medalManager, dataManager, luckPermsHook, config.medalsGrantPermissionOnUnlock(),
+                floatingTagManager);
 
         getServer().getPluginManager().registerEvents(new PlayerJoinListener(dataManager), this);
         getServer().getPluginManager().registerEvents(

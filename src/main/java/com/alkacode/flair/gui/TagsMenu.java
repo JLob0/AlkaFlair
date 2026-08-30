@@ -85,7 +85,7 @@ public final class TagsMenu extends BaseGui {
         if (unlocked) {
             boolean alreadyEquipped = tag.id().equals(data.equippedTagId());
             if (alreadyEquipped && !tagService.forceEquipped()) {
-                tagService.unequip(data);
+                tagService.unequip(player, data);
             } else if (!alreadyEquipped) {
                 tagService.equip(player, data, tag);
             }

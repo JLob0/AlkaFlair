@@ -93,23 +93,23 @@ public final class PlaceholderAPIHook extends PlaceholderExpansion {
         PlayerFlairData data = dataManager.get(player.getUniqueId());
 
         if (lower.startsWith("medal_")) {
-            String slotResult = medalSlotPlaceholder(data, lower.substring("medal_".length()));
+            String slotResult = medalSlotPlaceholder(player, data, lower.substring("medal_".length()));
             if (slotResult != null) {
                 return slotResult;
             }
         }
 
         return switch (lower) {
-            case "tag" -> data != null ? toLegacy(equippedTagDisplay(data)) : "";
+            case "tag" -> data != null ? toLegacy(player, equippedTagDisplay(data)) : "";
             case "tag_id" -> data != null && data.equippedTagId() != null ? data.equippedTagId() : "none";
-            case "tag_prefix" -> data != null ? toLegacy(resolvedPrefix(data)) : "";
-            case "tag_suffix" -> data != null ? toLegacy(resolvedSuffix(data)) : "";
+            case "tag_prefix" -> data != null ? toLegacy(player, resolvedPrefix(data)) : "";
+            case "tag_suffix" -> data != null ? toLegacy(player, resolvedSuffix(data)) : "";
             case "tag_count" -> String.valueOf(data != null ? data.unlockedTagIds().size() : 0);
-            case "tag_description" -> data != null ? toLegacy(equippedTagField(data, Tag::description)) : "";
-            case "tag_rarity" -> data != null ? toLegacy(equippedTagField(data, Tag::rarity)) : "";
-            case "tag_source" -> data != null ? toLegacy(equippedTagField(data, Tag::source)) : "";
+            case "tag_description" -> data != null ? toLegacy(player, equippedTagField(data, Tag::description)) : "";
+            case "tag_rarity" -> data != null ? toLegacy(player, equippedTagField(data, Tag::rarity)) : "";
+            case "tag_source" -> data != null ? toLegacy(player, equippedTagField(data, Tag::source)) : "";
             case "tag_obtained" -> data != null ? formatObtained(data.unlockedTagEpochs().get(data.equippedTagId())) : "";
-            case "medals" -> data != null ? toLegacy(equippedMedalsConcat(data)) : "";
+            case "medals" -> data != null ? toLegacy(player, equippedMedalsConcat(data)) : "";
             case "medal_count" -> String.valueOf(data != null ? data.unlockedMedalIds().size() : 0);
             case "medal_slots" -> data != null ? data.equippedMedalIds().size() + "/" + data.maxMedalSlots() : "0/0";
             default -> null;
@@ -119,7 +119,7 @@ public final class PlaceholderAPIHook extends PlaceholderExpansion {
     /** %alkaflair_medal_<slot>%, _description, _rarity, _source - slot e 1-based, na mesma
      * ordem (por Medal#position) usada por equippedMedalsConcat(). Retorna null se o sufixo
      * nao bater com esse padrao (deixa o switch principal seguir/retornar null). */
-    private String medalSlotPlaceholder(PlayerFlairData data, String suffix) {
+    private String medalSlotPlaceholder(Player player, PlayerFlairData data, String suffix) {
         String[] parts = suffix.split("_", 2);
         int slot;
         try {
@@ -136,12 +136,12 @@ public final class PlaceholderAPIHook extends PlaceholderExpansion {
         }
         Medal medal = equipped.get(slot - 1);
         if (parts.length == 1) {
-            return toLegacy(medal.display());
+            return toLegacy(player, medal.display());
         }
         return switch (parts[1]) {
-            case "description" -> toLegacy(String.join(" ", medal.description()));
-            case "rarity" -> toLegacy(medal.rarity());
-            case "source" -> toLegacy(medal.source());
+            case "description" -> toLegacy(player, String.join(" ", medal.description()));
+            case "rarity" -> toLegacy(player, medal.rarity());
+            case "source" -> toLegacy(player, medal.source());
             case "obtained" -> formatObtained(data.unlockedMedalEpochs().get(medal.id()));
             case "exclusive" -> medal.exclusive() ? "§a§lSIM" : "§cNão";
             default -> null;
@@ -222,7 +222,7 @@ public final class PlaceholderAPIHook extends PlaceholderExpansion {
             return "";
         }
         Tag tag = tagManager.get(data.equippedTagId());
-        return tag != null ? tag.display() : "";
+        return tag != null ? safeMiniMessage(tag.display()) : "";
     }
 
     private String resolvedPrefix(PlayerFlairData data) {
@@ -230,13 +230,13 @@ public final class PlaceholderAPIHook extends PlaceholderExpansion {
             return "";
         }
         if (data.ownPrefix() != null && !data.ownPrefix().isBlank()) {
-            return data.ownPrefix();
+            return safeMiniMessage(data.ownPrefix());
         }
         if (data.equippedTagId() == null) {
             return "";
         }
         Tag tag = tagManager.get(data.equippedTagId());
-        return tag != null ? tag.prefix() : "";
+        return tag != null ? safeMiniMessage(tag.prefix()) : "";
     }
 
     private String resolvedSuffix(PlayerFlairData data) {
@@ -244,13 +244,39 @@ public final class PlaceholderAPIHook extends PlaceholderExpansion {
             return "";
         }
         if (data.ownSuffix() != null && !data.ownSuffix().isBlank()) {
-            return data.ownSuffix();
+            return safeMiniMessage(data.ownSuffix());
         }
         if (data.equippedTagId() == null) {
             return "";
         }
         Tag tag = tagManager.get(data.equippedTagId());
-        return tag != null ? tag.suffix() : "";
+        return tag != null ? safeMiniMessage(tag.suffix()) : "";
+    }
+
+    // ATENCAO - mesmo bug do AlkaClans (ver TagFormatter#resolvedTagFormatted):
+    // dado ja salvo malformado (ex "<gradient:>", cor vazia) vazava cru pro
+    // nChat/TAB porque o MiniMessage nao lanca excecao pra tag com argumento
+    // invalido, so trata como texto literal. TagCommand#setar agora valida antes
+    // de salvar, mas dado ja corrompido antes desse fix precisa se autocorrigir
+    // aqui na leitura - fallback pro texto sem formatacao nenhuma, nunca a tag crua.
+    private static final java.util.regex.Pattern LEAKED_TAG =
+            java.util.regex.Pattern.compile("<[a-zA-Z_][a-zA-Z0-9_]*(:[^<>]*)?>");
+
+    private String safeMiniMessage(String miniMessage) {
+        if (miniMessage == null || miniMessage.isBlank()) {
+            return "";
+        }
+        net.kyori.adventure.text.Component parsed;
+        try {
+            parsed = MiniMessage.miniMessage().deserialize(miniMessage);
+        } catch (Exception e) {
+            return MiniMessage.miniMessage().stripTags(miniMessage);
+        }
+        String plain = net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer.plainText().serialize(parsed);
+        if (LEAKED_TAG.matcher(plain).find()) {
+            return MiniMessage.miniMessage().stripTags(miniMessage);
+        }
+        return miniMessage;
     }
 
     private String equippedMedalsConcat(PlayerFlairData data) {
@@ -274,11 +300,21 @@ public final class PlaceholderAPIHook extends PlaceholderExpansion {
 
     /** Converte o display (escrito em MiniMessage nas configs) pra codigos legado reais (§).
      * Vazio vira vazio. O §r final impede a cor/estilo da tag de vazar pro que vier depois
-     * (suffix/mensagem). */
-    private String toLegacy(String miniMessage) {
+     * (suffix/mensagem).
+     *
+     * <p>Resolve qualquer %placeholder% aninhado ANTES do MiniMessage (ex: uma tag com
+     * "%img_rank_knight%" no prefix, ItemsAdder) - o proprio PAPI so resolve
+     * %alkaflair_tag_prefix% numa passada so, nao re-escaneia o valor QUE ELE MESMO
+     * devolveu procurando outro %placeholder% dentro (bug real 30/08: icone aparecia
+     * cru no chat via nChat mesmo a tag flutuante 3D ja resolvendo certo - o
+     * FloatingTagManager faz essa mesma resolucao, so que numa classe separada).</p> */
+    private String toLegacy(Player player, String miniMessage) {
         if (miniMessage == null || miniMessage.isBlank()) {
             return "";
         }
-        return LEGACY.serialize(MiniMessage.miniMessage().deserialize(miniMessage)) + "§r";
+        String resolved = miniMessage.indexOf('%') >= 0
+                ? me.clip.placeholderapi.PlaceholderAPI.setPlaceholders(player, miniMessage)
+                : miniMessage;
+        return LEGACY.serialize(MiniMessage.miniMessage().deserialize(resolved)) + "§r";
     }
 }

@@ -45,6 +45,43 @@ public final class FlairConfig {
         return config.getString("tags.sound", "");
     }
 
+    public boolean floatingTagEnabled() {
+        return config.getBoolean("floating-tag.enabled", true);
+    }
+
+    public double floatingTagOffsetY() {
+        return config.getDouble("floating-tag.offset-y", 0.4);
+    }
+
+    public double floatingTagScale() {
+        return config.getDouble("floating-tag.scale", 1.0);
+    }
+
+    public double floatingTagViewDistance() {
+        return config.getDouble("floating-tag.view-distance", 48);
+    }
+
+    public int floatingTagBackgroundColor() {
+        return config.getInt("floating-tag.background-color", 0);
+    }
+
+    /** 0-255 (0 = texto/icone totalmente transparente, 255 = totalmente opaco/normal). */
+    public int floatingTagTextOpacity() {
+        return Math.max(0, Math.min(255, config.getInt("floating-tag.text-opacity", 255)));
+    }
+
+    public int floatingTagLineWidth() {
+        return config.getInt("floating-tag.line-width", 200);
+    }
+
+    public boolean floatingTagSeeThrough() {
+        return config.getBoolean("floating-tag.see-through", true);
+    }
+
+    public String floatingTagSeparator() {
+        return config.getString("floating-tag.separator", " ");
+    }
+
     public int medalsDefaultMaxSlots() {
         return config.getInt("medals.default-max-slots", 3);
     }

@@ -1,5 +1,6 @@
 package com.alkacode.flair.service;
 
+import com.alkacode.flair.floating.FloatingTagManager;
 import com.alkacode.flair.hook.LuckPermsHook;
 import com.alkacode.flair.manager.FlairPlayerDataManager;
 import com.alkacode.flair.medal.Medal;
@@ -18,13 +19,15 @@ public final class MedalService {
     private final FlairPlayerDataManager dataManager;
     private final LuckPermsHook luckPermsHook;
     private final boolean grantPermissionOnUnlock;
+    private final FloatingTagManager floatingTagManager;
 
     public MedalService(MedalManager medalManager, FlairPlayerDataManager dataManager, LuckPermsHook luckPermsHook,
-                         boolean grantPermissionOnUnlock) {
+                         boolean grantPermissionOnUnlock, FloatingTagManager floatingTagManager) {
         this.medalManager = medalManager;
         this.dataManager = dataManager;
         this.luckPermsHook = luckPermsHook;
         this.grantPermissionOnUnlock = grantPermissionOnUnlock;
+        this.floatingTagManager = floatingTagManager;
     }
 
     public boolean isUnlocked(Player player, PlayerFlairData data, Medal medal) {
@@ -48,11 +51,17 @@ public final class MedalService {
             return EquipResult.SLOTS_FULL;
         }
         dataManager.addEquippedMedal(data, medal.id());
+        if (floatingTagManager != null) {
+            floatingTagManager.refresh(player, data);
+        }
         return EquipResult.SUCCESS;
     }
 
-    public void unequip(PlayerFlairData data, Medal medal) {
+    public void unequip(Player player, PlayerFlairData data, Medal medal) {
         dataManager.removeEquippedMedal(data, medal.id());
+        if (floatingTagManager != null) {
+            floatingTagManager.refresh(player, data);
+        }
     }
 
     /** Desbloqueio direto (/medals add, voucher) - idempotente, concede permission no LP se configurado. */
@@ -63,9 +72,14 @@ public final class MedalService {
         }
     }
 
+    /** Admin (/medals del) - alvo pode estar offline, so refresca a tag flutuante se estiver online agora. */
     public void revoke(PlayerFlairData data, Medal medal) {
         dataManager.removeUnlockedMedal(data, medal.id());
         dataManager.removeEquippedMedal(data, medal.id());
+        Player online = org.bukkit.Bukkit.getPlayer(data.uuid());
+        if (online != null && floatingTagManager != null) {
+            floatingTagManager.refresh(online, data);
+        }
     }
 
     public void setMaxSlots(PlayerFlairData data, int slots) {

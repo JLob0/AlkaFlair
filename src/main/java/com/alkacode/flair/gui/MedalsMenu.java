@@ -81,7 +81,7 @@ public final class MedalsMenu extends BaseGui {
             return;
         }
         if (data.equippedMedalIds().contains(medal.id())) {
-            medalService.unequip(data, medal);
+            medalService.unequip(player, data, medal);
         } else {
             MedalService.EquipResult result = medalService.equip(player, data, medal);
             if (result == MedalService.EquipResult.SLOTS_FULL) {

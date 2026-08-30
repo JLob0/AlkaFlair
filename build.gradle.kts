@@ -6,7 +6,7 @@ plugins {
 }
 
 group = "com.alkacode"
-version = "1.0.6"
+version = "1.0.9"
 
 java {
     toolchain {
@@ -21,6 +21,7 @@ repositories {
     maven("https://jitpack.io")
     maven("https://hub.spigotmc.org/nexus/content/repositories/snapshots/")
     maven("https://repo.extendedclip.com/content/repositories/placeholderapi/")
+    maven("https://repo.codemc.io/repository/maven-public/")
 }
 
 dependencies {
@@ -32,6 +33,12 @@ dependencies {
     compileOnly("com.alkacode:AlkaEconomy:1.0.8")
     compileOnly("me.clip:placeholderapi:2.11.6")
     compileOnly("net.luckperms:api:5.4")
+    // tag flutuante 3D acima da cabeca (TextDisplay via packet) - softdepend, ver
+    // com.alkacode.flair.floating. PacketEvents ja e plugin permanente da rede
+    // (nao precisa instalar nada novo no host). Confirme que a versao do jar no host
+    // e compativel com essa API antes de subir - reflection puro, plugin so desativa
+    // o recurso (sem crashar) se o plugin nao estiver presente.
+    compileOnly("com.github.retrooper:packetevents-spigot:2.13.0")
 }
 
 tasks.withType<JavaCompile> {

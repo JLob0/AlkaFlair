@@ -19,6 +19,42 @@ tags:
   # Som ao trocar de tag (vazio = desabilita)
   sound: UI_TOAST_CHALLENGE_COMPLETE
 
+# ============================================================
+# TAG FLUTUANTE 3D (acima da cabeca do jogador - TextDisplay via packet, so
+# visual, nao existe entidade real no mundo). Requer o plugin PacketEvents
+# (softdepend) - sem ele, o recurso so fica desligado, sem erro. Texto exibido:
+# prefixo resolvido da tag (mesmo texto de %alkaflair_tag_prefix%, respeitando
+# ownPrefix/tagEnabled) + medalhas equipadas (mesma ordem de %alkaflair_medals%).
+# ============================================================
+floating-tag:
+  enabled: true
+  # Offset ADICIONAL (em blocos) por cima do ponto de montagem padrao do Minecraft
+  # (que ja fica perto do topo da cabeca sozinho) - NAO e a altura absoluta. Precisa
+  # calibrar vendo no jogo: sobe aos poucos (0.3, 0.5, 0.8...) ate ficar bom, rodando
+  # "/tags reload" + desequipar/equipar a tag de novo pra ver o valor novo aplicado.
+  offset-y: 0.4
+  # Escala geral do texto/icone flutuante (1.0 = tamanho normal do font_image do
+  # ItemsAdder). Sobe aos poucos (1.5, 2.0, 2.5...) ate ficar do tamanho que quiser -
+  # nao precisa mexer no resource pack pra isso, e so um transform visual do plugin.
+  scale: 1.0
+  # Distancia (em blocos) alem da qual a tag nao e enviada a um jogador que acabou de entrar.
+  view-distance: 48
+  # Cor de fundo ARGB (8 digitos hex: AARRGGBB) atras do texto - controla a "caixinha"
+  # atras, nao o texto/icone em si. 0 = totalmente transparente (padrao, sem caixinha).
+  # Pra deixar mais escuro/claro atras, muda o alpha: 0x40000000 (~25% opaco, preto),
+  # 0x80000000 (~50%), 0xFF000000 (100%, opaco de verdade). Pode usar outra cor no
+  # lugar de 000000 tambem (RRGGBB).
+  background-color: 0
+  # Opacidade do TEXTO/ICONE em si (0-255, nao e o fundo acima) - 255 = normal/opaco,
+  # valores menores deixam a tag flutuante mais transparente/apagada.
+  text-opacity: 255
+  # Largura maxima da linha antes de quebrar (bem alto pra nunca quebrar).
+  line-width: 200
+  # Ve a tag atraves de blocos/paredes.
+  see-through: true
+  # Separador entre o prefixo da tag e cada medalha equipada.
+  separator: " "
+
 medals:
   # Maximo padrao de medalhas equipadas simultaneamente (admin pode aumentar por jogador via /medals setslots)
   default-max-slots: 3
@@ -59,6 +95,7 @@ messages:
   tag-added: "<green>Tag <white><id> <green>adicionada para <white><player>."
   tag-removed: "<green>Tag <white><id> <green>removida de <white><player>."
   tag-own-set: "<green>Prefixo/sufixo proprio de <white><player> <green>definido."
+  tag-own-invalid: "<red>Formato invalido - confira se toda tag MiniMessage esta fechada corretamente (ex: <white><gradient:#RRGGBB:#RRGGBB> <red>precisa das duas cores)."
   tag-own-cleared: "<green>Prefixo/sufixo proprio de <white><player> <green>limpo."
   tag-voucher-redeemed: "<green>Voce resgatou a tag <white><tag_display><green>!"
   tag-voucher-already-redeemed: "<red>Esse voucher ja foi resgatado."

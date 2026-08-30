@@ -45,6 +45,32 @@ tags:
       material: NETHER_STAR
       name: "<dark_red>Tag Dono"
 
+  knight:
+    # Tag especial ligada ao rank "Knight" do AlkaX1 (ainda em teste - o AlkaX1 nao
+    # atribui essa tag sozinho ainda, so admin via /tags add ou voucher por enquanto.
+    # Quando o AlkaX1 estiver pronto, ele deve chamar AlkaFlairAPI#addTag no
+    # UUID do jogador quando ele alcancar o rank, em vez de mexer aqui).
+    # %img_rank_knight% (ItemsAdder, namespace myranks) - resolvido via PAPI so na
+    # tag flutuante 3D (FloatingTagManager); TAB/nChat ja resolvem PAPI sozinhos.
+    display: "%img_rank_knight% <gold><bold>Knight"
+    prefix: "%img_rank_knight% "
+    suffix: ""
+    description:
+      - "<gray>Tag especial de Knight - conquistada no AlkaX1."
+    rarity: "<gold>Lendaria"
+    source: "AlkaX1"
+    category: lendarias
+    position: 0
+    purchasable: false
+    obtainable: false
+    permission: ""
+    glow: true
+    item:
+      material: GOLDEN_HELMET
+      name: "<gold><bold>Tag Knight"
+      lore:
+        - "<gray>Especial - conquistada no AlkaX1"
+
   dragao:
     display: "<gradient:#FF0000:#FF8800>Dragão"
     prefix: "<#FF0000>[Dragão] "

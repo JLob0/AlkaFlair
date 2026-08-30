@@ -224,12 +224,36 @@ public final class TagCommand implements CommandExecutor, TabCompleter {
             data = dataManager.loadOffline(target.getUniqueId());
         }
         String suffix = args.length >= 4 ? args[3] : "";
-        tagService.setOwn(data, args[2], suffix);
+        if (!isValidMiniMessage(args[2]) || (!suffix.isEmpty() && !isValidMiniMessage(suffix))) {
+            send(sender, config.message("tag-own-invalid"));
+            return true;
+        }
+        tagService.setOwn(online ? Bukkit.getPlayer(target.getUniqueId()) : null, data, args[2], suffix);
         if (!online) {
             dataManager.savePlayerRow(data);
         }
         send(sender, config.message("tag-own-set").replace("<player>", args[1]));
         return true;
+    }
+
+    // ATENCAO - mesmo bug ja achado no AlkaClans (ver ClanCommand#isValidMiniMessage):
+    // tag com argumento invalido (ex "<gradient:>", cor vazia) faz o MiniMessage tratar
+    // a coisa toda como texto literal desde o inicio, SEM lancar excecao - por isso
+    // "setar" salvava prefixo/sufixo cru pra sempre, vazando pro nChat/TAB (mesma
+    // classe de bug do modtag do AlkaClans, 21/08). Deteccao real: deserializa
+    // (lenient) e confere se sobrou cara de tag no texto plano.
+    private static final java.util.regex.Pattern LEAKED_TAG =
+            java.util.regex.Pattern.compile("<[a-zA-Z_][a-zA-Z0-9_]*(:[^<>]*)?>");
+
+    private static boolean isValidMiniMessage(String input) {
+        net.kyori.adventure.text.Component parsed;
+        try {
+            parsed = MM.deserialize(input);
+        } catch (Exception e) {
+            return false;
+        }
+        String plain = net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer.plainText().serialize(parsed);
+        return !LEAKED_TAG.matcher(plain).find();
     }
 
     private boolean limpar(CommandSender sender, String[] args) {
@@ -247,7 +271,7 @@ public final class TagCommand implements CommandExecutor, TabCompleter {
         if (!online) {
             data = dataManager.loadOffline(target.getUniqueId());
         }
-        tagService.clearOwn(data);
+        tagService.clearOwn(online ? Bukkit.getPlayer(target.getUniqueId()) : null, data);
         if (!online) {
             dataManager.savePlayerRow(data);
         }
