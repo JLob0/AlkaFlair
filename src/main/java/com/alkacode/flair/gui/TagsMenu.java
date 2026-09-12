@@ -12,6 +12,7 @@ import com.alkacode.flair.tag.TagCategory;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.minimessage.MiniMessage;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemFlag;
@@ -32,6 +33,7 @@ public final class TagsMenu extends BaseGui {
     private final FlairEconomyService economyService;
     private final FlairPlayerDataManager dataManager;
     private String activeCategory;
+    private int page;
 
     public TagsMenu(JavaPlugin plugin, Player viewer, TagService tagService, FlairEconomyService economyService,
                      FlairPlayerDataManager dataManager) {
@@ -56,24 +58,69 @@ public final class TagsMenu extends BaseGui {
             boolean active = category.id().equals(activeCategory);
             String path = active ? "flair_tags.categoria-ativa" : "flair_tags.categoria-inativa";
             String label = (active ? "<bold>" : "") + category.display();
-            setItem(categorySlots.get(i), menu.item(path, Map.of("nome", label)), event -> {
+            ItemStack icon = buildCategoryIcon(category, path, label, active, menu);
+            setItem(categorySlots.get(i), icon, event -> {
                 activeCategory = category.id();
+                page = 0;
                 refresh();
             });
         }
 
-        renderGrid(layout);
+        renderGrid(layout, menu);
     }
 
-    private void renderGrid(GuiLayoutLoader.GuiLayout layout) {
+    /** Aba de categoria: usa o icone customizado (tags.yml categories.<id>.icon/itemsadder)
+     * quando definido, com glow (menus.yml flair_tags.categoria-*.glow) marcando a ativa;
+     * sem icone customizado, cai no vidro generico de sempre. */
+    private ItemStack buildCategoryIcon(TagCategory category, String path, String label, boolean active,
+                                         MenuConfig menu) {
+        if (!category.hasCustomIcon()) {
+            return menu.item(path, Map.of("nome", label));
+        }
+        Material fallback = category.icon().isBlank() ? Material.PAPER : Material.matchMaterial(category.icon());
+        if (fallback == null) {
+            fallback = Material.PAPER;
+        }
+        ItemStack item = iaItem(category.itemsAdderId(), fallback);
+        ItemMeta meta = item.getItemMeta();
+        meta.displayName(component(label));
+        if (menu.flag(path + ".glow", active)) {
+            meta.addEnchant(Enchantment.UNBREAKING, 1, true);
+            meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+        }
+        item.setItemMeta(meta);
+        return item;
+    }
+
+    private void renderGrid(GuiLayoutLoader.GuiLayout layout, MenuConfig menu) {
         List<Integer> gridSlots = layout.findSlots('0');
         List<Tag> tags = tagService.tagManager().tagsInCategory(activeCategory);
+        int pageSize = gridSlots.size();
+        int maxPage = pageSize == 0 ? 0 : Math.max(0, (tags.size() - 1) / pageSize);
+        if (page > maxPage) {
+            page = maxPage;
+        }
+        int from = page * pageSize;
+
         PlayerFlairData data = dataManager.get(player.getUniqueId());
-        for (int i = 0; i < gridSlots.size() && i < tags.size(); i++) {
-            Tag tag = tags.get(i);
+        for (int i = 0; i < gridSlots.size() && (from + i) < tags.size(); i++) {
+            Tag tag = tags.get(from + i);
             boolean unlocked = data != null && tagService.isUnlocked(player, data, tag);
             boolean equipped = data != null && tag.id().equals(data.equippedTagId());
             setItem(gridSlots.get(i), buildTagIcon(tag, unlocked, equipped), event -> onClick(tag, unlocked));
+        }
+
+        if (page > 0) {
+            setItem(layout.firstSlot('P'), menu.item("flair_tags.prev-page", null), event -> {
+                page--;
+                refresh();
+            });
+        }
+        if (from + pageSize < tags.size()) {
+            setItem(layout.firstSlot('N'), menu.item("flair_tags.next-page", null), event -> {
+                page++;
+                refresh();
+            });
         }
     }
 

@@ -12,8 +12,9 @@ flair_tags:
     - "#0000000#"
     - "#0000000#"
     - "#0000000#"
-    - "#########"
-  # C=aba de categoria (ate 9), 0=tag da categoria ativa (ate 21)
+    - "#P_____N#"
+  # C=aba de categoria (ate 9), 0=tag da categoria ativa (ate 21 por pagina)
+  # P=pagina anterior, N=proxima pagina (so aparecem quando existem, ver TagsMenu)
 
 flair_medals:
   rows: 5

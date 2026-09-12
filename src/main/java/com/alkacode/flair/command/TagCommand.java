@@ -317,6 +317,10 @@ public final class TagCommand implements CommandExecutor, TabCompleter {
         config.reload();
         com.alkacode.flair.config.MenuConfig.getInstance().reload();
         tagService.tagManager().load();
+        // Re-aplica a tag flutuante de todo mundo com os valores novos (escala/altura/
+        // display-type/item) SEM precisar reiniciar o plugin - antes o ajuste visual so
+        // valia no proximo equip/relog.
+        tagService.resyncFloatingTags();
         send(sender, config.message("reload"));
         return true;
     }

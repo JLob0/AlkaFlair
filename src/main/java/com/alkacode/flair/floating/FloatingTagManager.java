@@ -10,7 +10,9 @@ import com.github.retrooper.packetevents.PacketEvents;
 import com.github.retrooper.packetevents.protocol.entity.data.EntityData;
 import com.github.retrooper.packetevents.protocol.entity.data.EntityDataTypes;
 import com.github.retrooper.packetevents.protocol.entity.type.EntityTypes;
+import com.github.retrooper.packetevents.protocol.item.ItemStack;
 import com.github.retrooper.packetevents.protocol.world.Location;
+import io.github.retrooper.packetevents.util.SpigotConversionUtil;
 import com.github.retrooper.packetevents.util.Vector3f;
 import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerDestroyEntities;
 import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerEntityMetadata;
@@ -59,6 +61,11 @@ public final class FloatingTagManager {
     private static final int DATA_TEXT_OPACITY = 26;
     private static final int DATA_STYLE_FLAGS = 27;
 
+    // ItemDisplay - mesma base Display (8-22); primeiro campo especifico (item) em 23,
+    // display_type em 24. Indices verificados igual os do TextDisplay (protocolo, nao NMS).
+    private static final int DATA_ITEM = 23;
+    private static final int DATA_DISPLAY_TYPE = 24;
+
     private static final byte BILLBOARD_CENTER = 3;
     private static final byte STYLE_FLAG_SEE_THROUGH = 0x02;
 
@@ -83,14 +90,18 @@ public final class FloatingTagManager {
         if (!config.floatingTagEnabled()) {
             return;
         }
-        Component text = buildText(player, data);
-        boolean blank = PlainTextComponentSerializer.plainText().serialize(text).isBlank();
-        if (blank) {
+        Content content = buildContent(player, data);
+        if (content.isEmpty()) {
             unequipTag(player);
-        } else if (activeTags.containsKey(player.getUniqueId())) {
-            updateTag(player, text);
+            return;
+        }
+        FloatingTag existing = activeTags.get(player.getUniqueId());
+        // Trocar entre modo texto e modo item exige respawn (tipo de entidade diferente) -
+        // so da pra fazer updateTag (metadata) se o tipo bater com o que ja esta ativo.
+        if (existing != null && existing.isItem() == content.isItem()) {
+            updateTag(player, content);
         } else {
-            equipTag(player, text);
+            equipTag(player, content);
         }
     }
 
@@ -109,9 +120,9 @@ public final class FloatingTagManager {
             return;
         }
         unequipTag(player);
-        Component text = buildText(player, data);
-        if (!PlainTextComponentSerializer.plainText().serialize(text).isBlank()) {
-            equipTag(player, text);
+        Content content = buildContent(player, data);
+        if (!content.isEmpty()) {
+            equipTag(player, content);
         }
         sendNearbyTags(player);
     }
@@ -124,9 +135,11 @@ public final class FloatingTagManager {
         unequipTag(player);
     }
 
-    private void equipTag(Player player, Component text) {
+    private void equipTag(Player player, Content content) {
         unequipTag(player);
-        FloatingTag tag = new FloatingTag(player, text);
+        FloatingTag tag = content.isItem()
+                ? FloatingTag.ofItem(player, content.item)
+                : FloatingTag.ofText(player, content.text);
         activeTags.put(player.getUniqueId(), tag);
         for (Player viewer : Bukkit.getOnlinePlayers()) {
             if (canReceive(viewer, player)) {
@@ -137,12 +150,14 @@ public final class FloatingTagManager {
         }
     }
 
-    private void updateTag(Player player, Component text) {
+    private void updateTag(Player player, Content content) {
         FloatingTag tag = activeTags.get(player.getUniqueId());
         if (tag == null) {
             return;
         }
-        tag.text(text);
+        if (!tag.isItem()) {
+            tag.text(content.text); // modo item: o item e final (mesmo escudo), so re-envia metadata
+        }
         for (Player viewer : Bukkit.getOnlinePlayers()) {
             if (canReceive(viewer, player)) {
                 sendMetadataPacket(viewer, tag);
@@ -183,20 +198,96 @@ public final class FloatingTagManager {
         return viewer.getLocation().distanceSquared(owner.getLocation()) <= maxDistance * maxDistance;
     }
 
-    private Component buildText(Player player, PlayerFlairData data) {
+    /** O que sobe pra tag flutuante: um ITEM (ItemDisplay, escudo animado do IA) ou um
+     * TEXTO (TextDisplay, glifo/prefixo). Modo item tem prioridade quando a tag equipada
+     * tem `floating-item` e o item resolve no IA; senao cai no texto (que ja filtra so
+     * tags floating:true + ownPrefix). */
+    private Content buildContent(Player player, PlayerFlairData data) {
         if (!data.tagEnabled()) {
-            return Component.empty();
+            return Content.EMPTY;
         }
-        Component result = resolvedPrefix(player, data);
-        String separator = config.floatingTagSeparator();
-        for (Medal medal : equippedMedalsOrdered(data)) {
-            result = result.append(Component.text(separator)).append(safeDeserialize(player, medal.display()));
+        // Modo ITEM: tag equipada tem floating-item. ownPrefix (override manual do admin)
+        // ganha do item - se setado, vai pro modo texto abaixo.
+        String tagId = data.equippedTagId();
+        boolean ownPrefixSet = data.ownPrefix() != null && !data.ownPrefix().isBlank();
+        if (tagId != null && !ownPrefixSet) {
+            Tag tag = tagManager.get(tagId);
+            if (tag != null && tag.floatingItem() != null && !tag.floatingItem().isBlank()) {
+                ItemStack item = resolveItemStack(tag.floatingItem());
+                if (item != null) {
+                    return Content.item(item);
+                }
+                // Item nao resolveu (IA ausente / id errado): cai no texto, que mostra o
+                // glifo estatico do prefixo (%img_rank_shield_X%) como degradacao graciosa.
+            }
         }
-        return result;
+        // Modo TEXTO (comportamento atual): so tags floating:true + ownPrefix, + medalhas
+        // se floating-tag.show-medals estiver ligado (default false).
+        Component result = floatingPrefix(player, data);
+        if (config.floatingTagShowMedals()) {
+            String separator = config.floatingTagSeparator();
+            for (Medal medal : equippedMedalsOrdered(data)) {
+                result = result.append(Component.text(separator)).append(safeDeserialize(player, medal.display()));
+            }
+        }
+        if (PlainTextComponentSerializer.plainText().serialize(result).isBlank()) {
+            return Content.EMPTY;
+        }
+        return Content.text(result);
     }
 
-    /** Mesma prioridade de PlaceholderAPIHook#resolvedPrefix: ownPrefix (setado por admin) sobrepoe a tag equipada. */
-    private Component resolvedPrefix(Player player, PlayerFlairData data) {
+    /** Resolve o ItemStack de um item do ItemsAdder (ex: "myranks:shield_diamond_anim")
+     * via reflection na API oficial (nunca import direto - regra do ecossistema), e
+     * converte pro ItemStack do PacketEvents. null se o IA nao estiver presente, o id nao
+     * existir, ou a API mudar - o chamador cai no glifo de texto nesse caso. */
+    private ItemStack resolveItemStack(String iaId) {
+        try {
+            Class<?> cls = Class.forName("dev.lone.itemsadder.api.CustomStack");
+            Object cs = cls.getMethod("getInstance", String.class).invoke(null, iaId);
+            if (cs == null) {
+                return null;
+            }
+            org.bukkit.inventory.ItemStack bukkit =
+                    (org.bukkit.inventory.ItemStack) cls.getMethod("getItemStack").invoke(cs);
+            return bukkit == null ? null : SpigotConversionUtil.fromBukkitItemStack(bukkit);
+        } catch (Throwable t) {
+            return null;
+        }
+    }
+
+    /** Conteudo da tag flutuante: exatamente um de texto/item, ou vazio. */
+    private static final class Content {
+        static final Content EMPTY = new Content(null, null);
+        final Component text;
+        final ItemStack item;
+
+        private Content(Component text, ItemStack item) {
+            this.text = text;
+            this.item = item;
+        }
+
+        static Content text(Component text) {
+            return new Content(text, null);
+        }
+
+        static Content item(ItemStack item) {
+            return new Content(null, item);
+        }
+
+        boolean isEmpty() {
+            return text == null && item == null;
+        }
+
+        boolean isItem() {
+            return item != null;
+        }
+    }
+
+    /** Prefixo que sobe pra tag flutuante 3D. Diferente do prefixo de chat/TAB: aqui so
+     * sobem tags marcadas com {@code floating: true} (icones grandes tipo knight/shields).
+     * Tag de texto comum (dragao, membro) fica no chat/TAB mas NAO flutua acima da cabeca.
+     * ownPrefix setado por admin sempre flutua (override manual explicito). */
+    private Component floatingPrefix(Player player, PlayerFlairData data) {
         if (data.ownPrefix() != null && !data.ownPrefix().isBlank()) {
             return safeDeserialize(player, data.ownPrefix());
         }
@@ -204,7 +295,10 @@ public final class FloatingTagManager {
             return Component.empty();
         }
         Tag tag = tagManager.get(data.equippedTagId());
-        return tag != null ? safeDeserialize(player, tag.prefix()) : Component.empty();
+        if (tag == null || !tag.floating()) {
+            return Component.empty();
+        }
+        return safeDeserialize(player, tag.prefix());
     }
 
     private List<Medal> equippedMedalsOrdered(PlayerFlairData data) {
@@ -260,7 +354,9 @@ public final class FloatingTagManager {
                 0f, 0f
         );
         WrapperPlayServerSpawnEntity spawn = new WrapperPlayServerSpawnEntity(
-                tag.entityId(), tag.entityUuid(), EntityTypes.TEXT_DISPLAY, location, 0f, 0, null
+                tag.entityId(), tag.entityUuid(),
+                tag.isItem() ? EntityTypes.ITEM_DISPLAY : EntityTypes.TEXT_DISPLAY,
+                location, 0f, 0, null
         );
         PacketEvents.getAPI().getPlayerManager().sendPacket(viewer, spawn);
     }
@@ -273,24 +369,32 @@ public final class FloatingTagManager {
     }
 
     private void sendMetadataPacket(Player viewer, FloatingTag tag) {
-        int flags = config.floatingTagSeeThrough() ? STYLE_FLAG_SEE_THROUGH : 0;
-
-        // offset ADITIVO acima do ponto de montagem padrao (nao e altura absoluta -
-        // o mount point de um passenger generico ja fica perto do topo da hitbox do
-        // player sozinho). floating-tag.offset-y no config.yml controla esse valor -
-        // precisa calibrar vendo no jogo, igual qualquer ajuste visual do ItemsAdder.
-        Vector3f translation = new Vector3f(0f, (float) config.floatingTagOffsetY(), 0f);
-        float scale = (float) config.floatingTagScale();
-
+        // offset/scale sao ADITIVOS acima do ponto de montagem padrao (perto do topo da
+        // hitbox do player). Item e texto tem valores proprios no config (renderizam em
+        // tamanhos-base diferentes) - calibrar vendo no jogo.
         List<EntityData<?>> values = new ArrayList<>();
-        values.add(new EntityData<>(DATA_TRANSLATION, EntityDataTypes.VECTOR3F, translation));
-        values.add(new EntityData<>(DATA_SCALE, EntityDataTypes.VECTOR3F, new Vector3f(scale, scale, scale)));
-        values.add(new EntityData<>(DATA_BILLBOARD_CONSTRAINTS, EntityDataTypes.BYTE, BILLBOARD_CENTER));
-        values.add(new EntityData<>(DATA_TEXT, EntityDataTypes.ADV_COMPONENT, tag.text()));
-        values.add(new EntityData<>(DATA_LINE_WIDTH, EntityDataTypes.INT, config.floatingTagLineWidth()));
-        values.add(new EntityData<>(DATA_BACKGROUND_COLOR, EntityDataTypes.INT, config.floatingTagBackgroundColor()));
-        values.add(new EntityData<>(DATA_TEXT_OPACITY, EntityDataTypes.BYTE, (byte) config.floatingTagTextOpacity()));
-        values.add(new EntityData<>(DATA_STYLE_FLAGS, EntityDataTypes.BYTE, (byte) flags));
+
+        if (tag.isItem()) {
+            float scale = (float) config.floatingItemScale();
+            values.add(new EntityData<>(DATA_TRANSLATION, EntityDataTypes.VECTOR3F,
+                    new Vector3f(0f, (float) config.floatingItemOffsetY(), 0f)));
+            values.add(new EntityData<>(DATA_SCALE, EntityDataTypes.VECTOR3F, new Vector3f(scale, scale, scale)));
+            values.add(new EntityData<>(DATA_BILLBOARD_CONSTRAINTS, EntityDataTypes.BYTE, BILLBOARD_CENTER));
+            values.add(new EntityData<>(DATA_ITEM, EntityDataTypes.ITEMSTACK, tag.item()));
+            values.add(new EntityData<>(DATA_DISPLAY_TYPE, EntityDataTypes.BYTE, (byte) config.floatingItemDisplayType()));
+        } else {
+            int flags = config.floatingTagSeeThrough() ? STYLE_FLAG_SEE_THROUGH : 0;
+            float scale = (float) config.floatingTagScale();
+            values.add(new EntityData<>(DATA_TRANSLATION, EntityDataTypes.VECTOR3F,
+                    new Vector3f(0f, (float) config.floatingTagOffsetY(), 0f)));
+            values.add(new EntityData<>(DATA_SCALE, EntityDataTypes.VECTOR3F, new Vector3f(scale, scale, scale)));
+            values.add(new EntityData<>(DATA_BILLBOARD_CONSTRAINTS, EntityDataTypes.BYTE, BILLBOARD_CENTER));
+            values.add(new EntityData<>(DATA_TEXT, EntityDataTypes.ADV_COMPONENT, tag.text()));
+            values.add(new EntityData<>(DATA_LINE_WIDTH, EntityDataTypes.INT, config.floatingTagLineWidth()));
+            values.add(new EntityData<>(DATA_BACKGROUND_COLOR, EntityDataTypes.INT, config.floatingTagBackgroundColor()));
+            values.add(new EntityData<>(DATA_TEXT_OPACITY, EntityDataTypes.BYTE, (byte) config.floatingTagTextOpacity()));
+            values.add(new EntityData<>(DATA_STYLE_FLAGS, EntityDataTypes.BYTE, (byte) flags));
+        }
 
         WrapperPlayServerEntityMetadata metadata = new WrapperPlayServerEntityMetadata(tag.entityId(), values);
         PacketEvents.getAPI().getPlayerManager().sendPacket(viewer, metadata);

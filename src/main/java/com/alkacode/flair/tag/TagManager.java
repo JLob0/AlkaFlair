@@ -47,7 +47,8 @@ public final class TagManager {
                 ConfigurationSection s = categoriesSection.getConfigurationSection(id);
                 if (s == null) continue;
                 loadedCategories.put(id.toLowerCase(), new TagCategory(id.toLowerCase(),
-                        s.getString("display", id), s.getInt("position", 99)));
+                        s.getString("display", id), s.getInt("position", 99),
+                        s.getString("icon", ""), s.getString("itemsadder", "")));
             }
         }
 
@@ -92,6 +93,8 @@ public final class TagManager {
                 priceAmount,
                 s.getString("permission", ""),
                 s.getBoolean("glow", false),
+                s.getBoolean("floating", false),
+                s.getString("floating-item", ""),
                 s.getStringList("aliases"),
                 ItemBuilder.fromConfig(s.getConfigurationSection("item"), plugin.getLogger())
         );

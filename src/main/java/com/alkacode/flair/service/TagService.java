@@ -176,4 +176,28 @@ public final class TagService {
     public TagManager tagManager() {
         return tagManager;
     }
+
+    /** Re-sincroniza a tag flutuante de todos os players online com o estado atual
+     * (config + tags.yml recem-recarregados). Usado no /tags reload pra aplicar mudanca
+     * de escala/altura/display-type/item AO VIVO, sem reiniciar o plugin - antes disso
+     * a metadata so ia no equip/spawn, entao ajuste visual exigia restart. refresh()
+     * respawna se o tipo mudou (texto<->item) ou so re-envia metadata se for o mesmo. */
+    public void resyncFloatingTags() {
+        if (floatingTagManager == null) {
+            return;
+        }
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            if (!dataManager.isLoaded(player.getUniqueId())) {
+                continue;
+            }
+            PlayerFlairData data = dataManager.get(player.getUniqueId());
+            if (data != null) {
+                // Respawn forcado (destroi + recria) em vez de so re-enviar metadata:
+                // garante que o client re-le escala/altura/item do zero. Update-only de
+                // metadata em Display entity montada nem sempre re-aplica o transform.
+                floatingTagManager.removeLocal(player);
+                floatingTagManager.refresh(player, data);
+            }
+        }
+    }
 }

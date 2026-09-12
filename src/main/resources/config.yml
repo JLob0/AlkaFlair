@@ -32,11 +32,11 @@ floating-tag:
   # (que ja fica perto do topo da cabeca sozinho) - NAO e a altura absoluta. Precisa
   # calibrar vendo no jogo: sobe aos poucos (0.3, 0.5, 0.8...) ate ficar bom, rodando
   # "/tags reload" + desequipar/equipar a tag de novo pra ver o valor novo aplicado.
-  offset-y: 0.4
+  offset-y: 0.8
   # Escala geral do texto/icone flutuante (1.0 = tamanho normal do font_image do
   # ItemsAdder). Sobe aos poucos (1.5, 2.0, 2.5...) ate ficar do tamanho que quiser -
   # nao precisa mexer no resource pack pra isso, e so um transform visual do plugin.
-  scale: 1.0
+  scale: 3.0
   # Distancia (em blocos) alem da qual a tag nao e enviada a um jogador que acabou de entrar.
   view-distance: 48
   # Cor de fundo ARGB (8 digitos hex: AARRGGBB) atras do texto - controla a "caixinha"
@@ -44,7 +44,7 @@ floating-tag:
   # Pra deixar mais escuro/claro atras, muda o alpha: 0x40000000 (~25% opaco, preto),
   # 0x80000000 (~50%), 0xFF000000 (100%, opaco de verdade). Pode usar outra cor no
   # lugar de 000000 tambem (RRGGBB).
-  background-color: 0
+  background-color: 255
   # Opacidade do TEXTO/ICONE em si (0-255, nao e o fundo acima) - 255 = normal/opaco,
   # valores menores deixam a tag flutuante mais transparente/apagada.
   text-opacity: 255
@@ -52,8 +52,20 @@ floating-tag:
   line-width: 200
   # Ve a tag atraves de blocos/paredes.
   see-through: true
-  # Separador entre o prefixo da tag e cada medalha equipada.
+  # Mostrar as medalhas equipadas TAMBEM na tag flutuante 3D (default false: acima da
+  # cabeca sobe SO o icone da tag, medalhas ficam so no chat/inventario). Ligue se
+  # quiser as medalhas penduradas do lado do icone tambem.
+  show-medals: false
+  # Separador entre o prefixo da tag e cada medalha equipada (usado so se show-medals: true).
   separator: " "
+  # ---- Modo ITEM: tags com `floating-item` (escudos animados) sobem como ItemDisplay
+  # (item 3D do ItemsAdder, animacao nativa via .mcmeta) em vez de glifo de texto.
+  # Calibrar vendo no jogo (igual offset-y/scale do texto). ----
+  item-scale: 0.9
+  item-offset-y: 1.1
+  # 6 = GUI (chapado de frente, tipo icone de inventario); 8 = FIXED (tipo item frame,
+  # pega luz do mundo). Mexa se quiser outro look.
+  item-display-type: 6
 
 medals:
   # Maximo padrao de medalhas equipadas simultaneamente (admin pode aumentar por jogador via /medals setslots)

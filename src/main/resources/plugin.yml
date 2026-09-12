@@ -5,7 +5,7 @@ api-version: '1.21'
 author: AlkaStudio
 description: Tags cosmeticas (prefixo/sufixo equipavel, compravel) e medalhas (badges multi-equip por permissao) - dono do placeholder consumido por TAB/nChat.
 depend: [AlkaCore, AlkaEconomy]
-softdepend: [PlaceholderAPI, LuckPerms, packetevents]
+softdepend: [PlaceholderAPI, LuckPerms, packetevents, ItemsAdder]
 
 commands:
   tags:

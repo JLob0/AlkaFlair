@@ -27,6 +27,8 @@ public record Tag(
         double priceAmount,
         String permission,
         boolean glow,
+        boolean floating,
+        String floatingItem,
         List<String> aliases,
         ItemStack item
 ) {

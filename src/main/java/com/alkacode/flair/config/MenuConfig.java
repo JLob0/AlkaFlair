@@ -93,7 +93,12 @@ public final class MenuConfig {
         return title(path, placeholders);
     }
 
-    /** Constroi o ItemStack a partir de menus.yml.<path> (material/name/lore) com placeholders. */
+    /**
+     * Constroi o ItemStack a partir de menus.yml.<path> (material/name/lore) com placeholders.
+     * Se o path tiver {@code itemsadder: <namespace:id>}, o glyph do ItemsAdder tem prioridade
+     * sobre o {@code material:} (padrao de rede R9); sem ItemsAdder ou id invalido, cai no
+     * material vanilla normalmente.
+     */
     public ItemStack item(String path, Map<String, String> placeholders) {
         ConfigurationSection section = config.getConfigurationSection(path);
         if (section == null) {
@@ -103,7 +108,11 @@ public final class MenuConfig {
         if (material == null) {
             material = Material.STONE;
         }
-        ItemStack item = new ItemStack(material);
+        String iaId = section.getString("itemsadder", null);
+        ItemStack item = com.alkacode.core.hooks.ItemsAdderHook.resolve(iaId);
+        if (item == null) {
+            item = new ItemStack(material);
+        }
         ItemMeta meta = item.getItemMeta();
         String name = name(path, placeholders);
         if (name != null && !name.isEmpty()) {
@@ -115,6 +124,11 @@ public final class MenuConfig {
         }
         item.setItemMeta(meta);
         return item;
+    }
+
+    /** Booleano solto de menus.yml.<path> (ex: "flair_tags.categoria-ativa.glow"). */
+    public boolean flag(String path, boolean def) {
+        return config.getBoolean(path, def);
     }
 
     /** Nome (string MiniMessage) de menus.yml.<path> com placeholders aplicados. */

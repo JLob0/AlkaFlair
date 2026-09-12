@@ -13,12 +13,29 @@ common:
 # ------------------------- Tags -------------------------
 flair_tags:
   title: "<dark_gray>Tags"
+  # material aqui e so o FALLBACK generico (vidro) - se a categoria (tags.yml
+  # categories.<id>.icon/itemsadder) definir um icone, ele substitui o material/glyph
+  # da aba pra facilitar a localizacao visual (ex: DIAMOND pra vip, SHIELD pra shields).
+  # O glow/cor de "ativa" (amarelo) vs "inativa" (cinza) continua so no glass de
+  # fallback - categorias com icone proprio usam o campo glow abaixo pra marcar "ativa".
   categoria-ativa:
     material: YELLOW_STAINED_GLASS_PANE
     name: "{nome}"
+    glow: true
   categoria-inativa:
     material: GRAY_STAINED_GLASS_PANE
     name: "{nome}"
+    glow: false
+  # Paginacao da grade de tags dentro da categoria ativa (aparecem so quando tem
+  # pagina anterior/seguinte - ex: categoria "Equipe" com mais de 21 tags).
+  prev-page:
+    material: ARROW
+    itemsadder: "boxpixstudio:arrow_left_v1"
+    name: "<yellow>« Página anterior"
+  next-page:
+    material: ARROW
+    itemsadder: "boxpixstudio:arrow_right_v1"
+    name: "<yellow>Próxima página »"
   prefixo-equipada: "<green><bold>✔ "
   prefixo-desbloqueada: "<white>"
   prefixo-bloqueada: "<gray>"

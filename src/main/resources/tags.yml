@@ -8,21 +8,39 @@
 #   ligar uma tag a um rank/grupo do LuckPerms sem duplicar controle de acesso.
 
 categories:
+  # icon (opcional): material do item que representa a aba da categoria no menu
+  # flair_tags (categoria-ativa/categoria-inativa em menus.yml). Se nao definido,
+  # a aba cai no vidro generico (amarelo/cinza) do menus.yml.
+  # itemsadder (opcional, "namespace:id"): glyph do ItemsAdder com prioridade sobre
+  # o icon acima (padrao R9) - sem ItemsAdder ou id invalido, cai no icon/material.
   staff:
     display: "<gold>Equipe"
     position: 1
+    icon: COMMAND_BLOCK
   lendarias:
     display: "<gradient:#FF0000:#FF8800>Lendárias"
     position: 2
+    icon: DRAGON_HEAD
   vip:
     display: "<green>VIP"
     position: 3
+    icon: DIAMOND
+  shields:
+    display: "<aqua>Escudos"
+    position: 2
+    icon: SHIELD
   default:
     display: "<gray>Padrão"
     position: 99
+    icon: NAME_TAG
   teste:
     display: "<white>[TESTE] Trocar"
     position: 0
+    icon: PAPER
+  bounty:
+    display: "<gradient:#FF3B30:#A855F7>Caçada</gradient>"
+    position: 4
+    icon: CROSSBOW
 
 tags:
   dono:
@@ -45,6 +63,577 @@ tags:
       material: NETHER_STAR
       name: "<dark_red>Tag Dono"
 
+  # ===== HIERARQUIA DA EQUIPE - todas category: staff, obtainable:false + permission
+  # alkaflair.tag.<cargo>: desbloqueio via /tags add <player> <cargo> ou ligando a
+  # permission a um grupo do LuckPerms por departamento. Cores agrupadas por
+  # departamento (Fundação/Direção em vermelho-ouro, Gestão em ambar, Operação em
+  # azul, Produto em verde, Tecnologia em ciano, Criativo em magenta, Comunidade &
+  # Crescimento em rosa, Pessoas em cinza). =====
+
+  # --- FUNDAÇÃO ---
+  fundador:
+    display: "<b><gradient:#FFD700:#8B0000>Fundador</gradient></b>"
+    prefix: "<b><gradient:#FFD700:#8B0000>[Fundador] </gradient></b>"
+    suffix: ""
+    description: ["<gray>Cargo: Fundador."]
+    rarity: "<gradient:#FFD700:#8B0000>Lendário</gradient>"
+    source: "Equipe"
+    category: staff
+    position: 2
+    purchasable: false
+    obtainable: false
+    permission: "alkaflair.tag.fundador"
+    glow: true
+    item: { material: BEACON, name: "<b><gradient:#FFD700:#8B0000>Tag Fundador</gradient></b>" }
+  cofundador:
+    display: "<b><gradient:#FFD700:#8B0000>Cofundador</gradient></b>"
+    prefix: "<b><gradient:#FFD700:#8B0000>[Cofundador] </gradient></b>"
+    suffix: ""
+    description: ["<gray>Cargo: Cofundador."]
+    rarity: "<gradient:#FFD700:#8B0000>Lendário</gradient>"
+    source: "Equipe"
+    category: staff
+    position: 3
+    purchasable: false
+    obtainable: false
+    permission: "alkaflair.tag.cofundador"
+    glow: true
+    item: { material: END_CRYSTAL, name: "<b><gradient:#FFD700:#8B0000>Tag Cofundador</gradient></b>" }
+
+  # --- DIREÇÃO ---
+  diretor_executivo:
+    display: "<gradient:#DC2626:#7F1D1D>Diretor Executivo</gradient>"
+    prefix: "<gradient:#DC2626:#7F1D1D>[Dir. Executivo] </gradient>"
+    suffix: ""
+    description: ["<gray>Cargo: Diretor Executivo."]
+    rarity: "<gradient:#DC2626:#7F1D1D>Lendário</gradient>"
+    source: "Equipe"
+    category: staff
+    position: 4
+    purchasable: false
+    obtainable: false
+    permission: "alkaflair.tag.diretor_executivo"
+    glow: false
+    item: { material: NETHERITE_INGOT, name: "<gradient:#DC2626:#7F1D1D>Tag Diretor Executivo</gradient>" }
+  diretor_operacoes:
+    display: "<gradient:#DC2626:#7F1D1D>Diretor de Operações</gradient>"
+    prefix: "<gradient:#DC2626:#7F1D1D>[Dir. Operações] </gradient>"
+    suffix: ""
+    description: ["<gray>Cargo: Diretor de Operações."]
+    rarity: "<gradient:#DC2626:#7F1D1D>Lendário</gradient>"
+    source: "Equipe"
+    category: staff
+    position: 5
+    purchasable: false
+    obtainable: false
+    permission: "alkaflair.tag.diretor_operacoes"
+    glow: false
+    item: { material: PISTON, name: "<gradient:#DC2626:#7F1D1D>Tag Diretor de Operações</gradient>" }
+  diretor_tecnico:
+    display: "<gradient:#DC2626:#7F1D1D>Diretor Técnico</gradient>"
+    prefix: "<gradient:#DC2626:#7F1D1D>[Dir. Técnico] </gradient>"
+    suffix: ""
+    description: ["<gray>Cargo: Diretor Técnico."]
+    rarity: "<gradient:#DC2626:#7F1D1D>Lendário</gradient>"
+    source: "Equipe"
+    category: staff
+    position: 6
+    purchasable: false
+    obtainable: false
+    permission: "alkaflair.tag.diretor_tecnico"
+    glow: false
+    item: { material: REDSTONE, name: "<gradient:#DC2626:#7F1D1D>Tag Diretor Técnico</gradient>" }
+  diretor_criativo:
+    display: "<gradient:#DC2626:#7F1D1D>Diretor Criativo</gradient>"
+    prefix: "<gradient:#DC2626:#7F1D1D>[Dir. Criativo] </gradient>"
+    suffix: ""
+    description: ["<gray>Cargo: Diretor Criativo."]
+    rarity: "<gradient:#DC2626:#7F1D1D>Lendário</gradient>"
+    source: "Equipe"
+    category: staff
+    position: 7
+    purchasable: false
+    obtainable: false
+    permission: "alkaflair.tag.diretor_criativo"
+    glow: false
+    item: { material: ITEM_FRAME, name: "<gradient:#DC2626:#7F1D1D>Tag Diretor Criativo</gradient>" }
+  diretor_comunidade:
+    display: "<gradient:#DC2626:#7F1D1D>Diretor de Comunidade</gradient>"
+    prefix: "<gradient:#DC2626:#7F1D1D>[Dir. Comunidade] </gradient>"
+    suffix: ""
+    description: ["<gray>Cargo: Diretor de Comunidade."]
+    rarity: "<gradient:#DC2626:#7F1D1D>Lendário</gradient>"
+    source: "Equipe"
+    category: staff
+    position: 8
+    purchasable: false
+    obtainable: false
+    permission: "alkaflair.tag.diretor_comunidade"
+    glow: false
+    item: { material: PLAYER_HEAD, name: "<gradient:#DC2626:#7F1D1D>Tag Diretor de Comunidade</gradient>" }
+  diretor_marketing:
+    display: "<gradient:#DC2626:#7F1D1D>Diretor de Marketing</gradient>"
+    prefix: "<gradient:#DC2626:#7F1D1D>[Dir. Marketing] </gradient>"
+    suffix: ""
+    description: ["<gray>Cargo: Diretor de Marketing."]
+    rarity: "<gradient:#DC2626:#7F1D1D>Lendário</gradient>"
+    source: "Equipe"
+    category: staff
+    position: 9
+    purchasable: false
+    obtainable: false
+    permission: "alkaflair.tag.diretor_marketing"
+    glow: false
+    item: { material: FILLED_MAP, name: "<gradient:#DC2626:#7F1D1D>Tag Diretor de Marketing</gradient>" }
+
+  # --- GESTÃO ---
+  staff_master:
+    display: "<b><gradient:#F59E0B:#B45309>Staff Master</gradient></b>"
+    prefix: "<b><gradient:#F59E0B:#B45309>[Staff Master] </gradient></b>"
+    suffix: ""
+    description: ["<gray>Cargo: Staff Master."]
+    rarity: "<gradient:#F59E0B:#B45309>Épico</gradient>"
+    source: "Equipe"
+    category: staff
+    position: 10
+    purchasable: false
+    obtainable: false
+    permission: "alkaflair.tag.staff_master"
+    glow: true
+    item: { material: GOLDEN_HELMET, name: "<b><gradient:#F59E0B:#B45309>Tag Staff Master</gradient></b>" }
+  gerente_geral:
+    display: "<gradient:#F59E0B:#B45309>Gerente Geral</gradient>"
+    prefix: "<gradient:#F59E0B:#B45309>[Ger. Geral] </gradient>"
+    suffix: ""
+    description: ["<gray>Cargo: Gerente Geral."]
+    rarity: "<gradient:#F59E0B:#B45309>Épico</gradient>"
+    source: "Equipe"
+    category: staff
+    position: 11
+    purchasable: false
+    obtainable: false
+    permission: "alkaflair.tag.gerente_geral"
+    glow: false
+    item: { material: IRON_CHESTPLATE, name: "<gradient:#F59E0B:#B45309>Tag Gerente Geral</gradient>" }
+  gerente_rede:
+    display: "<gradient:#F59E0B:#B45309>Gerente de Rede</gradient>"
+    prefix: "<gradient:#F59E0B:#B45309>[Ger. Rede] </gradient>"
+    suffix: ""
+    description: ["<gray>Cargo: Gerente de Rede."]
+    rarity: "<gradient:#F59E0B:#B45309>Épico</gradient>"
+    source: "Equipe"
+    category: staff
+    position: 12
+    purchasable: false
+    obtainable: false
+    permission: "alkaflair.tag.gerente_rede"
+    glow: false
+    item: { material: ENDER_EYE, name: "<gradient:#F59E0B:#B45309>Tag Gerente de Rede</gradient>" }
+  gerente_staff:
+    display: "<gradient:#F59E0B:#B45309>Gerente de Staff</gradient>"
+    prefix: "<gradient:#F59E0B:#B45309>[Ger. Staff] </gradient>"
+    suffix: ""
+    description: ["<gray>Cargo: Gerente de Staff."]
+    rarity: "<gradient:#F59E0B:#B45309>Épico</gradient>"
+    source: "Equipe"
+    category: staff
+    position: 13
+    purchasable: false
+    obtainable: false
+    permission: "alkaflair.tag.gerente_staff"
+    glow: false
+    item: { material: IRON_HELMET, name: "<gradient:#F59E0B:#B45309>Tag Gerente de Staff</gradient>" }
+  gerente_modalidade:
+    display: "<gradient:#F59E0B:#B45309>Gerente de Modalidade</gradient>"
+    prefix: "<gradient:#F59E0B:#B45309>[Ger. Modalidade] </gradient>"
+    suffix: ""
+    description: ["<gray>Cargo: Gerente de Modalidade."]
+    rarity: "<gradient:#F59E0B:#B45309>Épico</gradient>"
+    source: "Equipe"
+    category: staff
+    position: 14
+    purchasable: false
+    obtainable: false
+    permission: "alkaflair.tag.gerente_modalidade"
+    glow: false
+    item: { material: TARGET, name: "<gradient:#F59E0B:#B45309>Tag Gerente de Modalidade</gradient>" }
+
+  # --- OPERAÇÃO ---
+  administracao:
+    display: "<gradient:#3B82F6:#1D4ED8>Administração</gradient>"
+    prefix: "<gradient:#3B82F6:#1D4ED8>[Admin] </gradient>"
+    suffix: ""
+    description: ["<gray>Cargo: Administração."]
+    rarity: "<gradient:#3B82F6:#1D4ED8>Raro</gradient>"
+    source: "Equipe"
+    category: staff
+    position: 15
+    purchasable: false
+    obtainable: false
+    permission: "alkaflair.tag.administracao"
+    glow: false
+    item: { material: WRITABLE_BOOK, name: "<gradient:#3B82F6:#1D4ED8>Tag Administração</gradient>" }
+  moderacao:
+    display: "<gradient:#3B82F6:#1D4ED8>Moderação</gradient>"
+    prefix: "<gradient:#3B82F6:#1D4ED8>[Mod] </gradient>"
+    suffix: ""
+    description: ["<gray>Cargo: Moderação."]
+    rarity: "<gradient:#3B82F6:#1D4ED8>Raro</gradient>"
+    source: "Equipe"
+    category: staff
+    position: 16
+    purchasable: false
+    obtainable: false
+    permission: "alkaflair.tag.moderacao"
+    glow: false
+    item: { material: IRON_SWORD, name: "<gradient:#3B82F6:#1D4ED8>Tag Moderação</gradient>" }
+  suporte:
+    display: "<gradient:#3B82F6:#1D4ED8>Suporte</gradient>"
+    prefix: "<gradient:#3B82F6:#1D4ED8>[Suporte] </gradient>"
+    suffix: ""
+    description: ["<gray>Cargo: Suporte."]
+    rarity: "<gradient:#3B82F6:#1D4ED8>Raro</gradient>"
+    source: "Equipe"
+    category: staff
+    position: 17
+    purchasable: false
+    obtainable: false
+    permission: "alkaflair.tag.suporte"
+    glow: false
+    item: { material: BELL, name: "<gradient:#3B82F6:#1D4ED8>Tag Suporte</gradient>" }
+  ouvidoria:
+    display: "<gradient:#3B82F6:#1D4ED8>Ouvidoria</gradient>"
+    prefix: "<gradient:#3B82F6:#1D4ED8>[Ouvidoria] </gradient>"
+    suffix: ""
+    description: ["<gray>Cargo: Ouvidoria."]
+    rarity: "<gradient:#3B82F6:#1D4ED8>Raro</gradient>"
+    source: "Equipe"
+    category: staff
+    position: 18
+    purchasable: false
+    obtainable: false
+    permission: "alkaflair.tag.ouvidoria"
+    glow: false
+    item: { material: OAK_SIGN, name: "<gradient:#3B82F6:#1D4ED8>Tag Ouvidoria</gradient>" }
+  revisao:
+    display: "<gradient:#3B82F6:#1D4ED8>Revisão</gradient>"
+    prefix: "<gradient:#3B82F6:#1D4ED8>[Revisão] </gradient>"
+    suffix: ""
+    description: ["<gray>Cargo: Revisão."]
+    rarity: "<gradient:#3B82F6:#1D4ED8>Raro</gradient>"
+    source: "Equipe"
+    category: staff
+    position: 19
+    purchasable: false
+    obtainable: false
+    permission: "alkaflair.tag.revisao"
+    glow: false
+    item: { material: SPYGLASS, name: "<gradient:#3B82F6:#1D4ED8>Tag Revisão</gradient>" }
+
+  # --- PRODUTO ---
+  game_design:
+    display: "<gradient:#10B981:#047857>Game Design</gradient>"
+    prefix: "<gradient:#10B981:#047857>[Game Design] </gradient>"
+    suffix: ""
+    description: ["<gray>Cargo: Game Design."]
+    rarity: "<gradient:#10B981:#047857>Incomum</gradient>"
+    source: "Equipe"
+    category: staff
+    position: 20
+    purchasable: false
+    obtainable: false
+    permission: "alkaflair.tag.game_design"
+    glow: false
+    item: { material: CRAFTING_TABLE, name: "<gradient:#10B981:#047857>Tag Game Design</gradient>" }
+  economia:
+    display: "<gradient:#10B981:#047857>Economia</gradient>"
+    prefix: "<gradient:#10B981:#047857>[Economia] </gradient>"
+    suffix: ""
+    description: ["<gray>Cargo: Economia."]
+    rarity: "<gradient:#10B981:#047857>Incomum</gradient>"
+    source: "Equipe"
+    category: staff
+    position: 21
+    purchasable: false
+    obtainable: false
+    permission: "alkaflair.tag.economia"
+    glow: false
+    item: { material: EMERALD, name: "<gradient:#10B981:#047857>Tag Economia</gradient>" }
+  qualidade_de_vida:
+    display: "<gradient:#10B981:#047857>Qualidade de Vida</gradient>"
+    prefix: "<gradient:#10B981:#047857>[QoL] </gradient>"
+    suffix: ""
+    description: ["<gray>Cargo: Qualidade de Vida."]
+    rarity: "<gradient:#10B981:#047857>Incomum</gradient>"
+    source: "Equipe"
+    category: staff
+    position: 22
+    purchasable: false
+    obtainable: false
+    permission: "alkaflair.tag.qualidade_de_vida"
+    glow: false
+    item: { material: GOLDEN_APPLE, name: "<gradient:#10B981:#047857>Tag Qualidade de Vida</gradient>" }
+  qa:
+    display: "<gradient:#10B981:#047857>QA</gradient>"
+    prefix: "<gradient:#10B981:#047857>[QA] </gradient>"
+    suffix: ""
+    description: ["<gray>Cargo: QA."]
+    rarity: "<gradient:#10B981:#047857>Incomum</gradient>"
+    source: "Equipe"
+    category: staff
+    position: 23
+    purchasable: false
+    obtainable: false
+    permission: "alkaflair.tag.qa"
+    glow: false
+    item: { material: OBSERVER, name: "<gradient:#10B981:#047857>Tag QA</gradient>" }
+  lore:
+    display: "<gradient:#10B981:#047857>Lore</gradient>"
+    prefix: "<gradient:#10B981:#047857>[Lore] </gradient>"
+    suffix: ""
+    description: ["<gray>Cargo: Lore."]
+    rarity: "<gradient:#10B981:#047857>Incomum</gradient>"
+    source: "Equipe"
+    category: staff
+    position: 24
+    purchasable: false
+    obtainable: false
+    permission: "alkaflair.tag.lore"
+    glow: false
+    item: { material: ENCHANTED_BOOK, name: "<gradient:#10B981:#047857>Tag Lore</gradient>" }
+  eventos:
+    display: "<gradient:#10B981:#047857>Eventos</gradient>"
+    prefix: "<gradient:#10B981:#047857>[Eventos] </gradient>"
+    suffix: ""
+    description: ["<gray>Cargo: Eventos."]
+    rarity: "<gradient:#10B981:#047857>Incomum</gradient>"
+    source: "Equipe"
+    category: staff
+    position: 25
+    purchasable: false
+    obtainable: false
+    permission: "alkaflair.tag.eventos"
+    glow: false
+    item: { material: FIREWORK_ROCKET, name: "<gradient:#10B981:#047857>Tag Eventos</gradient>" }
+
+  # --- TECNOLOGIA ---
+  desenvolvimento:
+    display: "<gradient:#06B6D4:#0E7490>Desenvolvimento</gradient>"
+    prefix: "<gradient:#06B6D4:#0E7490>[Dev] </gradient>"
+    suffix: ""
+    description: ["<gray>Cargo: Desenvolvimento."]
+    rarity: "<gradient:#06B6D4:#0E7490>Incomum</gradient>"
+    source: "Equipe"
+    category: staff
+    position: 26
+    purchasable: false
+    obtainable: false
+    permission: "alkaflair.tag.desenvolvimento"
+    glow: false
+    item: { material: COMMAND_BLOCK, name: "<gradient:#06B6D4:#0E7490>Tag Desenvolvimento</gradient>" }
+  infraestrutura:
+    display: "<gradient:#06B6D4:#0E7490>Infraestrutura</gradient>"
+    prefix: "<gradient:#06B6D4:#0E7490>[Infra] </gradient>"
+    suffix: ""
+    description: ["<gray>Cargo: Infraestrutura."]
+    rarity: "<gradient:#06B6D4:#0E7490>Incomum</gradient>"
+    source: "Equipe"
+    category: staff
+    position: 27
+    purchasable: false
+    obtainable: false
+    permission: "alkaflair.tag.infraestrutura"
+    glow: false
+    item: { material: IRON_BLOCK, name: "<gradient:#06B6D4:#0E7490>Tag Infraestrutura</gradient>" }
+  seguranca:
+    display: "<gradient:#06B6D4:#0E7490>Segurança</gradient>"
+    prefix: "<gradient:#06B6D4:#0E7490>[Segurança] </gradient>"
+    suffix: ""
+    description: ["<gray>Cargo: Segurança."]
+    rarity: "<gradient:#06B6D4:#0E7490>Incomum</gradient>"
+    source: "Equipe"
+    category: staff
+    position: 28
+    purchasable: false
+    obtainable: false
+    permission: "alkaflair.tag.seguranca"
+    glow: false
+    item: { material: IRON_DOOR, name: "<gradient:#06B6D4:#0E7490>Tag Segurança</gradient>" }
+  dados:
+    display: "<gradient:#06B6D4:#0E7490>Dados</gradient>"
+    prefix: "<gradient:#06B6D4:#0E7490>[Dados] </gradient>"
+    suffix: ""
+    description: ["<gray>Cargo: Dados."]
+    rarity: "<gradient:#06B6D4:#0E7490>Incomum</gradient>"
+    source: "Equipe"
+    category: staff
+    position: 29
+    purchasable: false
+    obtainable: false
+    permission: "alkaflair.tag.dados"
+    glow: false
+    item: { material: CHEST, name: "<gradient:#06B6D4:#0E7490>Tag Dados</gradient>" }
+
+  # --- CRIATIVO ---
+  design:
+    display: "<gradient:#D946EF:#A21CAF>Design</gradient>"
+    prefix: "<gradient:#D946EF:#A21CAF>[Design] </gradient>"
+    suffix: ""
+    description: ["<gray>Cargo: Design."]
+    rarity: "<gradient:#D946EF:#A21CAF>Incomum</gradient>"
+    source: "Equipe"
+    category: staff
+    position: 30
+    purchasable: false
+    obtainable: false
+    permission: "alkaflair.tag.design"
+    glow: false
+    item: { material: PAINTING, name: "<gradient:#D946EF:#A21CAF>Tag Design</gradient>" }
+  build:
+    display: "<gradient:#D946EF:#A21CAF>Build</gradient>"
+    prefix: "<gradient:#D946EF:#A21CAF>[Build] </gradient>"
+    suffix: ""
+    description: ["<gray>Cargo: Build."]
+    rarity: "<gradient:#D946EF:#A21CAF>Incomum</gradient>"
+    source: "Equipe"
+    category: staff
+    position: 31
+    purchasable: false
+    obtainable: false
+    permission: "alkaflair.tag.build"
+    glow: false
+    item: { material: BRICKS, name: "<gradient:#D946EF:#A21CAF>Tag Build</gradient>" }
+  modelagem:
+    display: "<gradient:#D946EF:#A21CAF>Modelagem</gradient>"
+    prefix: "<gradient:#D946EF:#A21CAF>[Modelagem] </gradient>"
+    suffix: ""
+    description: ["<gray>Cargo: Modelagem."]
+    rarity: "<gradient:#D946EF:#A21CAF>Incomum</gradient>"
+    source: "Equipe"
+    category: staff
+    position: 32
+    purchasable: false
+    obtainable: false
+    permission: "alkaflair.tag.modelagem"
+    glow: false
+    item: { material: ARMOR_STAND, name: "<gradient:#D946EF:#A21CAF>Tag Modelagem</gradient>" }
+  assets:
+    display: "<gradient:#D946EF:#A21CAF>Assets</gradient>"
+    prefix: "<gradient:#D946EF:#A21CAF>[Assets] </gradient>"
+    suffix: ""
+    description: ["<gray>Cargo: Assets."]
+    rarity: "<gradient:#D946EF:#A21CAF>Incomum</gradient>"
+    source: "Equipe"
+    category: staff
+    position: 33
+    purchasable: false
+    obtainable: false
+    permission: "alkaflair.tag.assets"
+    glow: false
+    item: { material: SHULKER_BOX, name: "<gradient:#D946EF:#A21CAF>Tag Assets</gradient>" }
+
+  # --- COMUNIDADE & CRESCIMENTO ---
+  comunidade:
+    display: "<gradient:#F472B6:#DB2777>Comunidade</gradient>"
+    prefix: "<gradient:#F472B6:#DB2777>[Comunidade] </gradient>"
+    suffix: ""
+    description: ["<gray>Cargo: Comunidade."]
+    rarity: "<gradient:#F472B6:#DB2777>Incomum</gradient>"
+    source: "Equipe"
+    category: staff
+    position: 34
+    purchasable: false
+    obtainable: false
+    permission: "alkaflair.tag.comunidade"
+    glow: false
+    item: { material: TOTEM_OF_UNDYING, name: "<gradient:#F472B6:#DB2777>Tag Comunidade</gradient>" }
+  marketing:
+    display: "<gradient:#F472B6:#DB2777>Marketing</gradient>"
+    prefix: "<gradient:#F472B6:#DB2777>[Marketing] </gradient>"
+    suffix: ""
+    description: ["<gray>Cargo: Marketing."]
+    rarity: "<gradient:#F472B6:#DB2777>Incomum</gradient>"
+    source: "Equipe"
+    category: staff
+    position: 35
+    purchasable: false
+    obtainable: false
+    permission: "alkaflair.tag.marketing"
+    glow: false
+    item: { material: BOOK, name: "<gradient:#F472B6:#DB2777>Tag Marketing</gradient>" }
+  social_media:
+    display: "<gradient:#F472B6:#DB2777>Social Media</gradient>"
+    prefix: "<gradient:#F472B6:#DB2777>[Social Media] </gradient>"
+    suffix: ""
+    description: ["<gray>Cargo: Social Media."]
+    rarity: "<gradient:#F472B6:#DB2777>Incomum</gradient>"
+    source: "Equipe"
+    category: staff
+    position: 36
+    purchasable: false
+    obtainable: false
+    permission: "alkaflair.tag.social_media"
+    glow: false
+    item: { material: GLOW_ITEM_FRAME, name: "<gradient:#F472B6:#DB2777>Tag Social Media</gradient>" }
+  parcerias:
+    display: "<gradient:#F472B6:#DB2777>Parcerias</gradient>"
+    prefix: "<gradient:#F472B6:#DB2777>[Parcerias] </gradient>"
+    suffix: ""
+    description: ["<gray>Cargo: Parcerias."]
+    rarity: "<gradient:#F472B6:#DB2777>Incomum</gradient>"
+    source: "Equipe"
+    category: staff
+    position: 37
+    purchasable: false
+    obtainable: false
+    permission: "alkaflair.tag.parcerias"
+    glow: false
+    item: { material: HONEYCOMB, name: "<gradient:#F472B6:#DB2777>Tag Parcerias</gradient>" }
+
+  # --- PESSOAS ---
+  recursos_humanos:
+    display: "<gradient:#94A3B8:#475569>Recursos Humanos</gradient>"
+    prefix: "<gradient:#94A3B8:#475569>[RH] </gradient>"
+    suffix: ""
+    description: ["<gray>Cargo: Recursos Humanos."]
+    rarity: "<gradient:#94A3B8:#475569>Comum</gradient>"
+    source: "Equipe"
+    category: staff
+    position: 38
+    purchasable: false
+    obtainable: false
+    permission: "alkaflair.tag.recursos_humanos"
+    glow: false
+    item: { material: VILLAGER_SPAWN_EGG, name: "<gradient:#94A3B8:#475569>Tag Recursos Humanos</gradient>" }
+  recrutamento:
+    display: "<gradient:#94A3B8:#475569>Recrutamento</gradient>"
+    prefix: "<gradient:#94A3B8:#475569>[Recrutamento] </gradient>"
+    suffix: ""
+    description: ["<gray>Cargo: Recrutamento."]
+    rarity: "<gradient:#94A3B8:#475569>Comum</gradient>"
+    source: "Equipe"
+    category: staff
+    position: 39
+    purchasable: false
+    obtainable: false
+    permission: "alkaflair.tag.recrutamento"
+    glow: false
+    item: { material: FISHING_ROD, name: "<gradient:#94A3B8:#475569>Tag Recrutamento</gradient>" }
+  treinamento:
+    display: "<gradient:#94A3B8:#475569>Treinamento</gradient>"
+    prefix: "<gradient:#94A3B8:#475569>[Treinamento] </gradient>"
+    suffix: ""
+    description: ["<gray>Cargo: Treinamento."]
+    rarity: "<gradient:#94A3B8:#475569>Comum</gradient>"
+    source: "Equipe"
+    category: staff
+    position: 40
+    purchasable: false
+    obtainable: false
+    permission: "alkaflair.tag.treinamento"
+    glow: false
+    item: { material: BOOKSHELF, name: "<gradient:#94A3B8:#475569>Tag Treinamento</gradient>" }
+
   knight:
     # Tag especial ligada ao rank "Knight" do AlkaX1 (ainda em teste - o AlkaX1 nao
     # atribui essa tag sozinho ainda, so admin via /tags add ou voucher por enquanto.
@@ -65,11 +654,232 @@ tags:
     obtainable: false
     permission: ""
     glow: true
+    # floating: true = sobe como icone 3D acima da cabeca (FloatingTagManager). Tags SEM
+    # esse flag (dragao, membro, etc) continuam no chat/TAB mas NAO flutuam - so as tags
+    # de icone (knight, shields) sobem.
+    floating: true
     item:
       material: GOLDEN_HELMET
       name: "<gold><bold>Tag Knight"
       lore:
         - "<gray>Especial - conquistada no AlkaX1"
+
+  # ===== ESCUDOS 3D (Boxpix Studio, namespace myranks do ItemsAdder). Sobem ANIMADOS
+  # acima da cabeca: floating-item aponta pro item animado do IA (ItemDisplay, animacao
+  # nativa via .mcmeta). floating:true e o prefix `%img_rank_shield_X%` sao o FALLBACK
+  # estatico (glifo) caso o item nao resolva no IA. obtainable:false = desbloqueio por 2
+  # vias: (1) admin `/tags add <player> shield_X`, ou (2) permission
+  # `alkaflair.tag.shield_X` no LuckPerms (amarra num rank = recompensa automatica).
+  # Calibrar tamanho/altura do ItemDisplay em config.yml floating-tag.item-scale/offset. =====
+  shield_diamond:
+    display: "%img_rank_shield_diamond% <aqua><bold>Diamond"
+    prefix: "%img_rank_shield_diamond% "
+    suffix: ""
+    description: ["<gray>Escudo de rank Diamond."]
+    rarity: "<aqua>Épico"
+    source: "Ranks"
+    category: shields
+    position: 1
+    purchasable: false
+    obtainable: false
+    permission: "alkaflair.tag.shield_diamond"
+    glow: true
+    floating: true
+    floating-item: "myranks:shield_diamond_anim"
+    item:
+      material: SHIELD
+      name: "<aqua><bold>Escudo Diamond"
+      lore: ["<gray>Ícone 3D acima da cabeça"]
+  shield_emerald:
+    display: "%img_rank_shield_emerald% <green><bold>Emerald"
+    prefix: "%img_rank_shield_emerald% "
+    suffix: ""
+    description: ["<gray>Escudo de rank Emerald."]
+    rarity: "<green>Épico"
+    source: "Ranks"
+    category: shields
+    position: 2
+    purchasable: false
+    obtainable: false
+    permission: "alkaflair.tag.shield_emerald"
+    glow: true
+    floating: true
+    floating-item: "myranks:shield_emerald_anim"
+    item:
+      material: SHIELD
+      name: "<green><bold>Escudo Emerald"
+      lore: ["<gray>Ícone 3D acima da cabeça"]
+  shield_royal:
+    display: "%img_rank_shield_royal% <gold><bold>Royal"
+    prefix: "%img_rank_shield_royal% "
+    suffix: ""
+    description: ["<gray>Escudo de rank Royal."]
+    rarity: "<gold>Lendário"
+    source: "Ranks"
+    category: shields
+    position: 3
+    purchasable: false
+    obtainable: false
+    permission: "alkaflair.tag.shield_royal"
+    glow: true
+    floating: true
+    floating-item: "myranks:shield_royal_anim"
+    item:
+      material: SHIELD
+      name: "<gold><bold>Escudo Royal"
+      lore: ["<gray>Ícone 3D acima da cabeça"]
+  shield_dragon:
+    display: "%img_rank_shield_dragon% <red><bold>Dragon"
+    prefix: "%img_rank_shield_dragon% "
+    suffix: ""
+    description: ["<gray>Escudo de rank Dragon."]
+    rarity: "<red>Lendário"
+    source: "Ranks"
+    category: shields
+    position: 4
+    purchasable: false
+    obtainable: false
+    permission: "alkaflair.tag.shield_dragon"
+    glow: true
+    floating: true
+    floating-item: "myranks:shield_dragon_anim"
+    item:
+      material: SHIELD
+      name: "<red><bold>Escudo Dragon"
+      lore: ["<gray>Ícone 3D acima da cabeça"]
+  shield_sword:
+    display: "%img_rank_shield_sword% <white><bold>Sword"
+    prefix: "%img_rank_shield_sword% "
+    suffix: ""
+    description: ["<gray>Escudo de rank Sword."]
+    rarity: "<white>Raro"
+    source: "Ranks"
+    category: shields
+    position: 5
+    purchasable: false
+    obtainable: false
+    permission: "alkaflair.tag.shield_sword"
+    glow: true
+    floating: true
+    floating-item: "myranks:shield_sword_anim"
+    item:
+      material: SHIELD
+      name: "<white><bold>Escudo Sword"
+      lore: ["<gray>Ícone 3D acima da cabeça"]
+  shield_coins:
+    display: "%img_rank_shield_coins% <yellow><bold>Coins"
+    prefix: "%img_rank_shield_coins% "
+    suffix: ""
+    description: ["<gray>Escudo de rank Coins."]
+    rarity: "<yellow>Raro"
+    source: "Ranks"
+    category: shields
+    position: 6
+    purchasable: false
+    obtainable: false
+    permission: "alkaflair.tag.shield_coins"
+    glow: true
+    floating: true
+    floating-item: "myranks:shield_coins_anim"
+    item:
+      material: SHIELD
+      name: "<yellow><bold>Escudo Coins"
+      lore: ["<gray>Ícone 3D acima da cabeça"]
+  shield_enchanter:
+    display: "%img_rank_shield_enchanter% <light_purple><bold>Enchanter"
+    prefix: "%img_rank_shield_enchanter% "
+    suffix: ""
+    description: ["<gray>Escudo de rank Enchanter."]
+    rarity: "<light_purple>Épico"
+    source: "Ranks"
+    category: shields
+    position: 7
+    purchasable: false
+    obtainable: false
+    permission: "alkaflair.tag.shield_enchanter"
+    glow: true
+    floating: true
+    floating-item: "myranks:shield_enchanter_anim"
+    item:
+      material: SHIELD
+      name: "<light_purple><bold>Escudo Enchanter"
+      lore: ["<gray>Ícone 3D acima da cabeça"]
+  shield_skull:
+    display: "%img_rank_shield_skull% <dark_gray><bold>Skull"
+    prefix: "%img_rank_shield_skull% "
+    suffix: ""
+    description: ["<gray>Escudo de rank Skull."]
+    rarity: "<dark_gray>Sombrio"
+    source: "Ranks"
+    category: shields
+    position: 8
+    purchasable: false
+    obtainable: false
+    permission: "alkaflair.tag.shield_skull"
+    glow: true
+    floating: true
+    floating-item: "myranks:shield_skull_anim"
+    item:
+      material: SHIELD
+      name: "<dark_gray><bold>Escudo Skull"
+      lore: ["<gray>Ícone 3D acima da cabeça"]
+  shield_blank_gold:
+    display: "%img_rank_shield_blank_gold% <gold><bold>Gold"
+    prefix: "%img_rank_shield_blank_gold% "
+    suffix: ""
+    description: ["<gray>Escudo dourado."]
+    rarity: "<gold>Comum"
+    source: "Ranks"
+    category: shields
+    position: 9
+    purchasable: false
+    obtainable: false
+    permission: "alkaflair.tag.shield_blank_gold"
+    glow: false
+    floating: true
+    floating-item: "myranks:shield_blank_gold_anim"
+    item:
+      material: SHIELD
+      name: "<gold><bold>Escudo Gold"
+      lore: ["<gray>Ícone 3D acima da cabeça"]
+  shield_blank_silver:
+    display: "%img_rank_shield_blank_silver% <gray><bold>Silver"
+    prefix: "%img_rank_shield_blank_silver% "
+    suffix: ""
+    description: ["<gray>Escudo prateado."]
+    rarity: "<gray>Comum"
+    source: "Ranks"
+    category: shields
+    position: 10
+    purchasable: false
+    obtainable: false
+    permission: "alkaflair.tag.shield_blank_silver"
+    glow: false
+    floating: true
+    floating-item: "myranks:shield_blank_silver_anim"
+    item:
+      material: SHIELD
+      name: "<gray><bold>Escudo Silver"
+      lore: ["<gray>Ícone 3D acima da cabeça"]
+  shield_blank_purple:
+    display: "%img_rank_shield_blank_purple% <dark_purple><bold>Purple"
+    prefix: "%img_rank_shield_blank_purple% "
+    suffix: ""
+    description: ["<gray>Escudo roxo."]
+    rarity: "<dark_purple>Comum"
+    source: "Ranks"
+    category: shields
+    position: 11
+    purchasable: false
+    obtainable: false
+    permission: "alkaflair.tag.shield_blank_purple"
+    glow: false
+    floating: true
+    floating-item: "myranks:shield_blank_purple_anim"
+    item:
+      material: SHIELD
+      name: "<dark_purple><bold>Escudo Purple"
+      lore: ["<gray>Ícone 3D acima da cabeça"]
 
   dragao:
     display: "<gradient:#FF0000:#FF8800>Dragão"
@@ -111,286 +921,260 @@ tags:
       material: NAME_TAG
       name: "<gray>Tag Membro"
 
-  # ===== TESTE (21/08) - 3 tags por tier de VIP, so pra validar o fluxo de troca
-  # no jogo. Compra por 1 gold (barato de proposito). Apagar quando terminar o teste. =====
-  teste_vip_a:
-    display: "<#55FF55>Teste VIP A"
-    prefix: "<#55FF55>[T-VIP-A] "
+  # ===== TAGS DE VIP - uma por tier, vinculadas ao rank do LuckPerms via permission.
+  # Nao aparecem a venda no menu (purchasable: false); desbloqueio automatico ao
+  # comprar o respectivo VIP (permission alkaflair.tag.<tier> ligada ao grupo), ou
+  # manualmente via /tags add <player> <tier>. =====
+  vip:
+    display: "<green>VIP"
+    prefix: "<green>[VIP] "
     suffix: ""
-    description: ["<gray>Tag de teste - tier VIP."]
-    rarity: "<#55FF55>Teste"
-    source: "Teste 21/08"
-    category: teste
+    description:
+      - "<gray>Tag exclusiva para jogadores que possuem o VIP."
+    rarity: "<green>Comum"
+    source: "VIP"
+    category: vip
     position: 1
-    purchasable: true
-    obtainable: true
-    price:
-      currency: gold
-      amount: 1
-    permission: ""
-    glow: false
-    item: { material: PAPER, name: "<#55FF55>Teste VIP A" }
-  teste_vip_b:
-    display: "<#55FF55>Teste VIP B"
-    prefix: "<#55FF55>[T-VIP-B] "
+    purchasable: false
+    obtainable: false
+    permission: "alkaflair.tag.vip"
+    glow: true
+    item:
+      material: LIME_DYE
+      name: "<green>Tag VIP"
+
+  vip_plus:
+    display: "<dark_green><bold>VIP+"
+    prefix: "<dark_green><bold>[VIP+] "
     suffix: ""
-    description: ["<gray>Tag de teste - tier VIP."]
-    rarity: "<#55FF55>Teste"
-    source: "Teste 21/08"
-    category: teste
+    description:
+      - "<gray>Tag exclusiva para jogadores que possuem o VIP+."
+    rarity: "<dark_green>Incomum"
+    source: "VIP"
+    category: vip
     position: 2
-    purchasable: true
-    obtainable: true
-    price:
-      currency: gold
-      amount: 1
-    permission: ""
-    glow: false
-    item: { material: PAPER, name: "<#55FF55>Teste VIP B" }
-  teste_vip_c:
-    display: "<#55FF55>Teste VIP C"
-    prefix: "<#55FF55>[T-VIP-C] "
+    purchasable: false
+    obtainable: false
+    permission: "alkaflair.tag.vip_plus"
+    glow: true
+    item:
+      material: EMERALD
+      name: "<dark_green><bold>Tag VIP+"
+
+  mvp:
+    display: "<blue>MVP"
+    prefix: "<blue>[MVP] "
     suffix: ""
-    description: ["<gray>Tag de teste - tier VIP."]
-    rarity: "<#55FF55>Teste"
-    source: "Teste 21/08"
-    category: teste
+    description:
+      - "<gray>Tag exclusiva para jogadores que possuem o MVP."
+    rarity: "<blue>Raro"
+    source: "VIP"
+    category: vip
     position: 3
-    purchasable: true
-    obtainable: true
-    price:
-      currency: gold
-      amount: 1
-    permission: ""
-    glow: false
-    item: { material: PAPER, name: "<#55FF55>Teste VIP C" }
+    purchasable: false
+    obtainable: false
+    permission: "alkaflair.tag.mvp"
+    glow: true
+    item:
+      material: DIAMOND
+      name: "<blue>Tag MVP"
 
-  teste_vipplus_a:
-    display: "<#00FFAA>Teste VIP+ A"
-    prefix: "<#00FFAA>[T-VIP+A] "
+  mvp_plus:
+    display: "<light_purple><bold>MVP+"
+    prefix: "<light_purple><bold>[MVP+] "
     suffix: ""
-    description: ["<gray>Tag de teste - tier VIP+."]
-    rarity: "<#00FFAA>Teste"
-    source: "Teste 21/08"
-    category: teste
+    description:
+      - "<gray>Tag exclusiva para jogadores que possuem o MVP+."
+    rarity: "<light_purple>Épico"
+    source: "VIP"
+    category: vip
     position: 4
-    purchasable: true
-    obtainable: true
-    price: { currency: gold, amount: 1 }
-    permission: ""
-    glow: false
-    item: { material: PAPER, name: "<#00FFAA>Teste VIP+ A" }
-  teste_vipplus_b:
-    display: "<#00FFAA>Teste VIP+ B"
-    prefix: "<#00FFAA>[T-VIP+B] "
+    purchasable: false
+    obtainable: false
+    permission: "alkaflair.tag.mvp_plus"
+    glow: true
+    item:
+      material: AMETHYST_SHARD
+      name: "<light_purple><bold>Tag MVP+"
+
+  alka:
+    display: "<yellow><bold>ALKA"
+    prefix: "<yellow><bold>[ALKA] "
     suffix: ""
-    description: ["<gray>Tag de teste - tier VIP+."]
-    rarity: "<#00FFAA>Teste"
-    source: "Teste 21/08"
-    category: teste
+    description:
+      - "<gray>Tag exclusiva para jogadores que possuem o ALKA."
+    rarity: "<yellow>Lendário"
+    source: "VIP"
+    category: vip
     position: 5
-    purchasable: true
-    obtainable: true
-    price: { currency: gold, amount: 1 }
-    permission: ""
-    glow: false
-    item: { material: PAPER, name: "<#00FFAA>Teste VIP+ B" }
-  teste_vipplus_c:
-    display: "<#00FFAA>Teste VIP+ C"
-    prefix: "<#00FFAA>[T-VIP+C] "
+    purchasable: false
+    obtainable: false
+    permission: "alkaflair.tag.alka"
+    glow: true
+    item:
+      material: GOLD_INGOT
+      name: "<yellow><bold>Tag ALKA"
+
+  drakkar:
+    display: "<red><bold>DRAKKAR"
+    prefix: "<red><bold>[DRAKKAR] "
     suffix: ""
-    description: ["<gray>Tag de teste - tier VIP+."]
-    rarity: "<#00FFAA>Teste"
-    source: "Teste 21/08"
-    category: teste
+    description:
+      - "<gray>Tag exclusiva para jogadores que possuem o DRAKKAR."
+    rarity: "<red>Lendário"
+    source: "VIP"
+    category: vip
     position: 6
-    purchasable: true
-    obtainable: true
-    price: { currency: gold, amount: 1 }
+    purchasable: false
+    obtainable: false
+    permission: "alkaflair.tag.drakkar"
+    glow: true
+    item:
+      material: REDSTONE
+      name: "<red><bold>Tag DRAKKAR"
+
+  # ===== TAGS DE BOUNTY/CAÇADA - progressao do sistema de hunter/bounty. Todas
+  # obtainable:false + permission vazia: o plugin de Bounty deve chamar
+  # AlkaFlairAPI#addTag no UUID do jogador ao atingir o rank/feito (rastreador,
+  # cacador, mercenario, executor, ceifador, lenda_da_cacada) ou o evento/leaderboard
+  # (top_matador, carrasco, inimigo_publico, alvo_vivo), em vez de mexer aqui. =====
+  rastreador:
+    display: "<gradient:#6EE7B7:#22C55E>Rastreador</gradient>"
+    prefix: "<gradient:#6EE7B7:#22C55E>[Rastreador] </gradient>"
+    suffix: ""
+    description: ["<gray>Tag de início da progressão de bounty."]
+    rarity: "<gradient:#6EE7B7:#22C55E>Comum</gradient>"
+    source: "Bounty"
+    category: bounty
+    position: 1
+    purchasable: false
+    obtainable: false
     permission: ""
     glow: false
-    item: { material: PAPER, name: "<#00FFAA>Teste VIP+ C" }
-
-  teste_mvp_a:
-    display: "<#55AAFF>Teste MVP A"
-    prefix: "<#55AAFF>[T-MVP-A] "
+    item: { material: COMPASS, name: "<gradient:#6EE7B7:#22C55E>Tag Rastreador</gradient>" }
+  cacador:
+    display: "<gradient:#FDE68A:#F59E0B>Caçador</gradient>"
+    prefix: "<gradient:#FDE68A:#F59E0B>[Caçador] </gradient>"
     suffix: ""
-    description: ["<gray>Tag de teste - tier MVP."]
-    rarity: "<#55AAFF>Teste"
-    source: "Teste 21/08"
-    category: teste
+    description: ["<gray>Tag de caçador ativo."]
+    rarity: "<gradient:#FDE68A:#F59E0B>Comum</gradient>"
+    source: "Bounty"
+    category: bounty
+    position: 2
+    purchasable: false
+    obtainable: false
+    permission: ""
+    glow: false
+    item: { material: BOW, name: "<gradient:#FDE68A:#F59E0B>Tag Caçador</gradient>" }
+  mercenario:
+    display: "<gradient:#FBBF24:#D97706>Mercenário</gradient>"
+    prefix: "<gradient:#FBBF24:#D97706>[Mercenário] </gradient>"
+    suffix: ""
+    description: ["<gray>Tag de hunter intermediário."]
+    rarity: "<gradient:#FBBF24:#D97706>Incomum</gradient>"
+    source: "Bounty"
+    category: bounty
+    position: 3
+    purchasable: false
+    obtainable: false
+    permission: ""
+    glow: false
+    item: { material: IRON_SWORD, name: "<gradient:#FBBF24:#D97706>Tag Mercenário</gradient>" }
+  executor:
+    display: "<gradient:#FB7185:#DC2626>Executor</gradient>"
+    prefix: "<gradient:#FB7185:#DC2626>[Executor] </gradient>"
+    suffix: ""
+    description: ["<gray>Tag de hunter avançado."]
+    rarity: "<gradient:#FB7185:#DC2626>Raro</gradient>"
+    source: "Bounty"
+    category: bounty
+    position: 4
+    purchasable: false
+    obtainable: false
+    permission: ""
+    glow: false
+    item: { material: DIAMOND_SWORD, name: "<gradient:#FB7185:#DC2626>Tag Executor</gradient>" }
+  ceifador:
+    display: "<gradient:#A855F7:#7F1D1D>Ceifador</gradient>"
+    prefix: "<gradient:#A855F7:#7F1D1D>[Ceifador] </gradient>"
+    suffix: ""
+    description: ["<gray>Tag de hunter de alto risco."]
+    rarity: "<gradient:#A855F7:#7F1D1D>Raro</gradient>"
+    source: "Bounty"
+    category: bounty
+    position: 5
+    purchasable: false
+    obtainable: false
+    permission: ""
+    glow: false
+    item: { material: NETHERITE_SWORD, name: "<gradient:#A855F7:#7F1D1D>Tag Ceifador</gradient>" }
+  lenda_da_cacada:
+    display: "<b><gradient:#FACC15:#EF4444:#A855F7>Lenda da Caçada</gradient></b>"
+    prefix: "<b><gradient:#FACC15:#EF4444:#A855F7>[Lenda da Caçada] </gradient></b>"
+    suffix: ""
+    description: ["<gray>Tag de rank máximo de hunter."]
+    rarity: "<gradient:#FACC15:#EF4444:#A855F7>Lendário</gradient>"
+    source: "Bounty"
+    category: bounty
+    position: 6
+    purchasable: false
+    obtainable: false
+    permission: ""
+    glow: true
+    item: { material: WITHER_SKELETON_SKULL, name: "<b><gradient:#FACC15:#EF4444:#A855F7>Tag Lenda da Caçada</gradient></b>" }
+  top_matador:
+    display: "<b><gradient:#FF3B30:#FF9500>Top Matador</gradient></b>"
+    prefix: "<b><gradient:#FF3B30:#FF9500>[Top Matador] </gradient></b>"
+    suffix: ""
+    description: ["<gray>Tag de top kills geral."]
+    rarity: "<gradient:#FF3B30:#FF9500>Lendário</gradient>"
+    source: "Bounty"
+    category: bounty
     position: 7
-    purchasable: true
-    obtainable: true
-    price: { currency: gold, amount: 1 }
+    purchasable: false
+    obtainable: false
     permission: ""
-    glow: false
-    item: { material: PAPER, name: "<#55AAFF>Teste MVP A" }
-  teste_mvp_b:
-    display: "<#55AAFF>Teste MVP B"
-    prefix: "<#55AAFF>[T-MVP-B] "
+    glow: true
+    item: { material: NETHERITE_AXE, name: "<b><gradient:#FF3B30:#FF9500>Tag Top Matador</gradient></b>" }
+  carrasco:
+    display: "<gradient:#DC2626:#7F1D1D>Carrasco</gradient>"
+    prefix: "<gradient:#DC2626:#7F1D1D>[Carrasco] </gradient>"
     suffix: ""
-    description: ["<gray>Tag de teste - tier MVP."]
-    rarity: "<#55AAFF>Teste"
-    source: "Teste 21/08"
-    category: teste
+    description: ["<gray>Tag para quem possui muitas kills com bounty."]
+    rarity: "<gradient:#DC2626:#7F1D1D>Épico</gradient>"
+    source: "Bounty"
+    category: bounty
     position: 8
-    purchasable: true
-    obtainable: true
-    price: { currency: gold, amount: 1 }
+    purchasable: false
+    obtainable: false
     permission: ""
     glow: false
-    item: { material: PAPER, name: "<#55AAFF>Teste MVP B" }
-  teste_mvp_c:
-    display: "<#55AAFF>Teste MVP C"
-    prefix: "<#55AAFF>[T-MVP-C] "
+    item: { material: DIAMOND_AXE, name: "<gradient:#DC2626:#7F1D1D>Tag Carrasco</gradient>" }
+  inimigo_publico:
+    display: "<b><gradient:#EF4444:#991B1B>Inimigo Público</gradient></b>"
+    prefix: "<b><gradient:#EF4444:#991B1B>[Inimigo Público] </gradient></b>"
     suffix: ""
-    description: ["<gray>Tag de teste - tier MVP."]
-    rarity: "<#55AAFF>Teste"
-    source: "Teste 21/08"
-    category: teste
+    description: ["<gray>Tag de maior Wanted Heat."]
+    rarity: "<gradient:#EF4444:#991B1B>Lendário</gradient>"
+    source: "Bounty"
+    category: bounty
     position: 9
-    purchasable: true
-    obtainable: true
-    price: { currency: gold, amount: 1 }
+    purchasable: false
+    obtainable: false
     permission: ""
-    glow: false
-    item: { material: PAPER, name: "<#55AAFF>Teste MVP C" }
-
-  teste_mvpplus_a:
-    display: "<#FF55FF>Teste MVP+ A"
-    prefix: "<#FF55FF>[T-MVP+A] "
+    glow: true
+    item: { material: TNT, name: "<b><gradient:#EF4444:#991B1B>Tag Inimigo Público</gradient></b>" }
+  alvo_vivo:
+    display: "<gradient:#38BDF8:#6366F1>Alvo Vivo</gradient>"
+    prefix: "<gradient:#38BDF8:#6366F1>[Alvo Vivo] </gradient>"
     suffix: ""
-    description: ["<gray>Tag de teste - tier MVP+."]
-    rarity: "<#FF55FF>Teste"
-    source: "Teste 21/08"
-    category: teste
+    description: ["<gray>Tag de quem sobreviveu a um Manhunt/evento."]
+    rarity: "<gradient:#38BDF8:#6366F1>Raro</gradient>"
+    source: "Bounty"
+    category: bounty
     position: 10
-    purchasable: true
-    obtainable: true
-    price: { currency: gold, amount: 1 }
+    purchasable: false
+    obtainable: false
     permission: ""
     glow: false
-    item: { material: PAPER, name: "<#FF55FF>Teste MVP+ A" }
-  teste_mvpplus_b:
-    display: "<#FF55FF>Teste MVP+ B"
-    prefix: "<#FF55FF>[T-MVP+B] "
-    suffix: ""
-    description: ["<gray>Tag de teste - tier MVP+."]
-    rarity: "<#FF55FF>Teste"
-    source: "Teste 21/08"
-    category: teste
-    position: 11
-    purchasable: true
-    obtainable: true
-    price: { currency: gold, amount: 1 }
-    permission: ""
-    glow: false
-    item: { material: PAPER, name: "<#FF55FF>Teste MVP+ B" }
-  teste_mvpplus_c:
-    display: "<#FF55FF>Teste MVP+ C"
-    prefix: "<#FF55FF>[T-MVP+C] "
-    suffix: ""
-    description: ["<gray>Tag de teste - tier MVP+."]
-    rarity: "<#FF55FF>Teste"
-    source: "Teste 21/08"
-    category: teste
-    position: 12
-    purchasable: true
-    obtainable: true
-    price: { currency: gold, amount: 1 }
-    permission: ""
-    glow: false
-    item: { material: PAPER, name: "<#FF55FF>Teste MVP+ C" }
-
-  teste_alka_a:
-    display: "<#FFD700>Teste ALKA A"
-    prefix: "<#FFD700>[T-ALKA-A] "
-    suffix: ""
-    description: ["<gray>Tag de teste - tier ALKA."]
-    rarity: "<#FFD700>Teste"
-    source: "Teste 21/08"
-    category: teste
-    position: 13
-    purchasable: true
-    obtainable: true
-    price: { currency: gold, amount: 1 }
-    permission: ""
-    glow: false
-    item: { material: PAPER, name: "<#FFD700>Teste ALKA A" }
-  teste_alka_b:
-    display: "<#FFD700>Teste ALKA B"
-    prefix: "<#FFD700>[T-ALKA-B] "
-    suffix: ""
-    description: ["<gray>Tag de teste - tier ALKA."]
-    rarity: "<#FFD700>Teste"
-    source: "Teste 21/08"
-    category: teste
-    position: 14
-    purchasable: true
-    obtainable: true
-    price: { currency: gold, amount: 1 }
-    permission: ""
-    glow: false
-    item: { material: PAPER, name: "<#FFD700>Teste ALKA B" }
-  teste_alka_c:
-    display: "<#FFD700>Teste ALKA C"
-    prefix: "<#FFD700>[T-ALKA-C] "
-    suffix: ""
-    description: ["<gray>Tag de teste - tier ALKA."]
-    rarity: "<#FFD700>Teste"
-    source: "Teste 21/08"
-    category: teste
-    position: 15
-    purchasable: true
-    obtainable: true
-    price: { currency: gold, amount: 1 }
-    permission: ""
-    glow: false
-    item: { material: PAPER, name: "<#FFD700>Teste ALKA C" }
-
-  teste_drakkar_a:
-    display: "<#FF0000>Teste DRAKKAR A"
-    prefix: "<#FF0000>[T-DRAKKAR-A] "
-    suffix: ""
-    description: ["<gray>Tag de teste - tier DRAKKAR."]
-    rarity: "<#FF0000>Teste"
-    source: "Teste 21/08"
-    category: teste
-    position: 16
-    purchasable: true
-    obtainable: true
-    price: { currency: gold, amount: 1 }
-    permission: ""
-    glow: true
-    item: { material: PAPER, name: "<#FF0000>Teste DRAKKAR A" }
-  teste_drakkar_b:
-    display: "<#FF0000>Teste DRAKKAR B"
-    prefix: "<#FF0000>[T-DRAKKAR-B] "
-    suffix: ""
-    description: ["<gray>Tag de teste - tier DRAKKAR."]
-    rarity: "<#FF0000>Teste"
-    source: "Teste 21/08"
-    category: teste
-    position: 17
-    purchasable: true
-    obtainable: true
-    price: { currency: gold, amount: 1 }
-    permission: ""
-    glow: true
-    item: { material: PAPER, name: "<#FF0000>Teste DRAKKAR B" }
-  teste_drakkar_c:
-    display: "<#FF0000>Teste DRAKKAR C"
-    prefix: "<#FF0000>[T-DRAKKAR-C] "
-    suffix: ""
-    description: ["<gray>Tag de teste - tier DRAKKAR."]
-    rarity: "<#FF0000>Teste"
-    source: "Teste 21/08"
-    category: teste
-    position: 18
-    purchasable: true
-    obtainable: true
-    price: { currency: gold, amount: 1 }
-    permission: ""
-    glow: true
-    item: { material: PAPER, name: "<#FF0000>Teste DRAKKAR C" }
+    item: { material: TOTEM_OF_UNDYING, name: "<gradient:#38BDF8:#6366F1>Tag Alvo Vivo</gradient>" }

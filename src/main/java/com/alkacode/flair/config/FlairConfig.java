@@ -78,6 +78,26 @@ public final class FlairConfig {
         return config.getBoolean("floating-tag.see-through", true);
     }
 
+    public boolean floatingTagShowMedals() {
+        return config.getBoolean("floating-tag.show-medals", false);
+    }
+
+    // ---- Modo ITEM (ItemDisplay) - usado por tags com floating-item (escudos animados) ----
+
+    public double floatingItemScale() {
+        return config.getDouble("floating-tag.item-scale", 0.6);
+    }
+
+    public double floatingItemOffsetY() {
+        return config.getDouble("floating-tag.item-offset-y", 0.5);
+    }
+
+    /** display_type do ItemDisplay (0-8). 6=GUI (chapado de frente, tipo inventario),
+     * 8=FIXED (tipo item frame). Default GUI - calibrar no jogo. */
+    public int floatingItemDisplayType() {
+        return config.getInt("floating-tag.item-display-type", 6);
+    }
+
     public String floatingTagSeparator() {
         return config.getString("floating-tag.separator", " ");
     }
